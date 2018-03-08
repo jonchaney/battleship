@@ -123,7 +123,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var game = new Battleship();
 
-    game.getPlayerNames();
     game.start();
 });
 
@@ -142,10 +141,9 @@ var Ship = __webpack_require__(3);
 var Board = __webpack_require__(0);
 
 var Player = function () {
-    function Player(name) {
+    function Player() {
         _classCallCheck(this, Player);
 
-        this.name = name;
         this.board = new Board();
         this.ships = [new Ship('Battleship', 4), new Ship('Cruiser', 3), new Ship('Carrier', 5), new Ship('Submarine', 3), new Ship('Destroyer', 2)];
     }

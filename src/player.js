@@ -2,8 +2,7 @@ const Ship = require('./ship.js');
 const Board = require('./board.js');
 
 class Player {
-    constructor(name) {
-        this.name = name;
+    constructor() {
         this.board = new Board();
         this.ships = [new Ship('Battleship', 4),
                       new Ship('Cruiser', 3),

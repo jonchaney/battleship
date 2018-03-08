@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let game = new Battleship();
 
-    game.getPlayerNames();
     game.start();
 
 });
