@@ -76,21 +76,26 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var Board = function () {
     function Board() {
+        var n = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
+
         _classCallCheck(this, Board);
 
-        this.grid = this.generateBoard();
+        this.grid = this.generateBoard(n);
     }
 
-    // time complexity to generate board is O(n^2)
-
-
     _createClass(Board, [{
+        key: "display",
+        value: function display() {}
+
+        // time complexity to generate board is O(n^2)
+
+    }, {
         key: "generateBoard",
         value: function generateBoard(n) {
             var row = [];
             var grid = [];
-            for (var i = 0; i < 10; i++) {
-                for (var j = 0; j < 10; j++) {
+            for (var i = 0; i < n; i++) {
+                for (var j = 0; j < n; j++) {
                     row.push(0);
                 }
                 grid.push(row);
@@ -112,13 +117,14 @@ module.exports = Board;
 "use strict";
 
 
-var Player = __webpack_require__(2);
-var Board = __webpack_require__(0);
+var Battleship = __webpack_require__(4);
 
 document.addEventListener('DOMContentLoaded', function () {
-    console.log("DOMContentLoaded");
 
-    var board = new Board(10);
+    var game = new Battleship();
+
+    game.getPlayerNames();
+    game.start();
 });
 
 /***/ }),
@@ -128,17 +134,107 @@ document.addEventListener('DOMContentLoaded', function () {
 "use strict";
 
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var Ship = __webpack_require__(3);
 var Board = __webpack_require__(0);
 
-var Player = function Player() {
-    _classCallCheck(this, Player);
+var Player = function () {
+    function Player(name) {
+        _classCallCheck(this, Player);
 
-    this.board = new Board();
-};
+        this.name = name;
+        this.board = new Board();
+        this.ships = [new Ship('Battleship', 4), new Ship('Cruiser', 3), new Ship('Carrier', 5), new Ship('Submarine', 3), new Ship('Destroyer', 2)];
+    }
+
+    _createClass(Player, [{
+        key: 'placeShips',
+        value: function placeShips() {}
+    }, {
+        key: 'makeMove',
+        value: function makeMove() {}
+    }, {
+        key: 'displayBoard',
+        value: function displayBoard() {
+            this.board.display();
+        }
+    }]);
+
+    return Player;
+}();
 
 module.exports = Player;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Ship = function () {
+    function Ship(type, length) {
+        _classCallCheck(this, Ship);
+
+        this.length = length;
+        this.type = type;
+        this.coordinates = [];
+    }
+
+    _createClass(Ship, [{
+        key: "isSunk",
+        value: function isSunk() {
+            if (this.length === 0) {
+                return "You sunk my " + this.type + "!";
+            }
+        }
+    }]);
+
+    return Ship;
+}();
+
+module.exports = Ship;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Player = __webpack_require__(2);
+
+var Battleship = function () {
+    function Battleship() {
+        _classCallCheck(this, Battleship);
+
+        this.playerOne = new Player();
+        this.playerTwo = new Player();
+    }
+
+    _createClass(Battleship, [{
+        key: 'getPlayerName',
+        value: function getPlayerName() {}
+    }, {
+        key: 'start',
+        value: function start() {}
+    }]);
+
+    return Battleship;
+}();
+
+module.exports = Battleship;
 
 /***/ })
 /******/ ]);

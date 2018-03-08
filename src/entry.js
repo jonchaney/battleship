@@ -1,8 +1,10 @@
-const Player = require('./player.js')
-const Board = require('./board.js')
+const Battleship = require('./battleship.js')
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOMContentLoaded")
+    
+    let game = new Battleship();
 
-    let board = new Board(10);
+    game.getPlayerNames();
+    game.start();
+
 });

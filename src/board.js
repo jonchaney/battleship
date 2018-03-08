@@ -1,14 +1,18 @@
 class Board {
-    constructor() {
-        this.grid = this.generateBoard();
+    constructor(n = 10) {
+        this.grid = this.generateBoard(n);
+    }
+
+    display() {
+        
     }
 
     // time complexity to generate board is O(n^2)
     generateBoard(n) {
         let row = [];
         let grid = [];
-        for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 10; j++) {
+        for (let i = 0; i < n; i++) {
+            for (let j = 0; j < n; j++) {
                 row.push(0);
             }
             grid.push(row);
