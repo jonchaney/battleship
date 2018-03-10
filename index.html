@@ -5,11 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="./assets/js/bundle.js"></script>
+    <link rel="stylesheet" type="text/css" href="./assets/reset.css">
+    <link rel="stylesheet" type="text/css" href="./assets/main.css">
     <title>Battleship</title>
 </head>
 <body>
     <main id='main'>
-            <input type="text" name="firstname" placeholder="enter player name">
+        <h1>Battleship</h1>
+        <div class="form">
+            <form onsubmit="game.playGame(event)">
+                <input type="text" placeholder="Player One's Name">
+                <input type="text" placeholder="Player Two's Name">
+                <input type="submit" value="Submit">
+            </form> 
+          </div>
+          <div id="tables"></div>
+          <div class="place-ships">
+            <p id="message"></p>
+            <p id="ship"></p>
+            <button id="axis" onclick="game.setAxis()" type="button">Horizontal</button>
+          </div>
     </main>
 </body>
 </html>

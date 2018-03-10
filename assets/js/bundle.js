@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,45 +70,13 @@
 "use strict";
 
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var Battleship = __webpack_require__(1);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+document.addEventListener('DOMContentLoaded', function () {
 
-var Board = function () {
-    function Board() {
-        var n = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
-
-        _classCallCheck(this, Board);
-
-        this.grid = this.generateBoard(n);
-    }
-
-    _createClass(Board, [{
-        key: "display",
-        value: function display() {}
-
-        // time complexity to generate board is O(n^2)
-
-    }, {
-        key: "generateBoard",
-        value: function generateBoard(n) {
-            var row = [];
-            var grid = [];
-            for (var i = 0; i < n; i++) {
-                for (var j = 0; j < n; j++) {
-                    row.push(0);
-                }
-                grid.push(row);
-                row = [];
-            }
-            return grid;
-        }
-    }]);
-
-    return Board;
-}();
-
-module.exports = Board;
+    window.game = new Battleship();
+    game.playGameTest();
+});
 
 /***/ }),
 /* 1 */
@@ -117,14 +85,74 @@ module.exports = Board;
 "use strict";
 
 
-var Battleship = __webpack_require__(4);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-document.addEventListener('DOMContentLoaded', function () {
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    var game = new Battleship();
+var Player = __webpack_require__(2);
 
-    game.start();
-});
+var Battleship = function () {
+    function Battleship() {
+        _classCallCheck(this, Battleship);
+
+        this.playerOne;
+        this.playerTwo;
+    }
+
+    _createClass(Battleship, [{
+        key: 'playGame',
+        value: function playGame(e) {
+            e.preventDefault();
+            this.playerOne = new Player(e.target[0].value); // create players
+            this.playerTwo = new Player(e.target[1].value);
+            document.getElementsByClassName('form')[0].style = 'display:none'; // remove form
+            this.displayBoards();
+        }
+    }, {
+        key: 'playGameTest',
+        value: function playGameTest() {
+            this.playerOne = new Player('Philip');
+            this.playerTwo = new Player('Harold');
+            document.getElementsByClassName('form')[0].style = 'display:none'; // remove form 
+
+            var play = this.playerOne.won() || this.playerTwo.won();
+            this.displayBoard(this.playerOne);
+            // place ships
+            this.placeShips(this.playerOne);
+        }
+    }, {
+        key: 'displayBoard',
+        value: function displayBoard(player) {
+            player.displayBoard(player.name);
+        }
+    }, {
+        key: 'placeShips',
+        value: function placeShips(player) {
+            document.getElementById('message').innerHTML = player.name + ' place your';
+            player.placeShips();
+            // this.playerTwo.placeShips();
+        }
+    }, {
+        key: 'getCoordinates',
+        value: function getCoordinates(e) {
+            console.log(e.target.data);
+        }
+    }, {
+        key: 'setAxis',
+        value: function setAxis() {
+            var axis = document.getElementById('axis');
+            if (axis.innerHTML === "Horizontal") {
+                axis.innerHTML = 'Vertical';
+            } else {
+                axis.innerHTML = 'Horizontal';
+            }
+        }
+    }]);
+
+    return Battleship;
+}();
+
+module.exports = Battleship;
 
 /***/ }),
 /* 2 */
@@ -137,27 +165,68 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Ship = __webpack_require__(3);
-var Board = __webpack_require__(0);
+var Board = __webpack_require__(4);
 
 var Player = function () {
-    function Player() {
+    function Player(name) {
         _classCallCheck(this, Player);
 
+        this.name = name;
         this.board = new Board();
-        this.ships = [new Ship('Battleship', 4), new Ship('Cruiser', 3), new Ship('Carrier', 5), new Ship('Submarine', 3), new Ship('Destroyer', 2)];
+        this.shipsSunk = 0;
     }
 
     _createClass(Player, [{
         key: 'placeShips',
-        value: function placeShips() {}
+        value: function placeShips() {
+            var _this = this;
+
+            var i = 0;
+            var ships = this.board.ships;
+            var loopShips = function loopShips(ships) {
+                document.getElementById('ship').innerHTML = ships[i].type + ' (length ' + ships[i].length + ')';
+                document.getElementById('tables').addEventListener('click', function (event) {
+                    placeSingleShip(event, ships[i], _this.board, function () {
+                        if (i < ships.length - 1) {
+                            document.getElementById('ship').innerHTML = ships[i + 1].type + ' (length ' + ships[i + 1].length + ')';
+                        }
+                        i++;
+                    });
+                });
+            };
+
+            function placeSingleShip(event, ship, board, nextShip) {
+                var coordinates = event.target.data;
+                var axis = document.getElementById('axis').innerHTML;
+                if (board.validPosition(coordinates, ship, axis)) {
+                    board.placeShip(coordinates, ship, axis);
+                    board.rerenderBoard();
+                } else {
+                    console.log('invalid position');
+                }
+                if (ship.length === ship.coordinates.length) {
+                    nextShip();
+                }
+            }
+
+            loopShips(ships);
+        }
     }, {
         key: 'makeMove',
         value: function makeMove() {}
     }, {
+        key: 'won',
+        value: function won() {
+            if (this.board.ships.count === 5) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }, {
         key: 'displayBoard',
-        value: function displayBoard() {
-            this.board.display();
+        value: function displayBoard(name) {
+            this.board.display(this.name);
         }
     }]);
 
@@ -182,6 +251,7 @@ var Ship = function () {
         _classCallCheck(this, Ship);
 
         this.length = length;
+        this.count = length;
         this.type = type;
         this.coordinates = [];
     }
@@ -189,8 +259,8 @@ var Ship = function () {
     _createClass(Ship, [{
         key: "isSunk",
         value: function isSunk() {
-            if (this.length === 0) {
-                return "You sunk my " + this.type + "!";
+            if (this.count === 0) {
+                return true;
             }
         }
     }]);
@@ -211,28 +281,127 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Player = __webpack_require__(2);
+var Ship = __webpack_require__(3);
 
-var Battleship = function () {
-    function Battleship() {
-        _classCallCheck(this, Battleship);
+var Board = function () {
+    function Board() {
+        var n = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 10;
 
-        this.playerOne = new Player();
-        this.playerTwo = new Player();
+        _classCallCheck(this, Board);
+
+        this.grid = this.generateBoard(n);
+        this.ships = [new Ship('Battleship', 4), new Ship('Cruiser', 3), new Ship('Carrier', 5), new Ship('Submarine', 3), new Ship('Destroyer', 2)];
+        this.gameStarted = false;
     }
 
-    _createClass(Battleship, [{
-        key: 'getPlayerName',
-        value: function getPlayerName() {}
+    _createClass(Board, [{
+        key: 'display',
+        value: function display(name) {
+            var _this = this;
+
+            var tables = document.getElementById('tables');
+            var table = document.createElement('table');
+            var tr = void 0; // row
+            var td = void 0; // column
+
+            // time complecity to render board to DOM is O(n^2)
+            this.grid.forEach(function (row, i) {
+                tr = document.createElement('tr');
+                row.forEach(function (col, j) {
+                    td = document.createElement('td');
+                    td.data = [i, j];
+
+                    if (_this.grid[i][j] === 1 && !_this.gameStarted) {
+                        td.classList.add('occupied');
+                    }
+                    tr.appendChild(td);
+                });
+                table.appendChild(tr);
+            });
+            table.setAttribute('id', '' + name);
+            tables.appendChild(table);
+            console.log(this.grid);
+        }
     }, {
-        key: 'start',
-        value: function start() {}
+        key: 'rerenderBoard',
+        value: function rerenderBoard() {
+            var tables = document.getElementById('tables');
+            tables.removeChild(tables.firstChild);
+            this.display();
+        }
+
+        // time complexity to generate board is O(n^2)
+
+    }, {
+        key: 'generateBoard',
+        value: function generateBoard(n) {
+            var row = [];
+            var grid = [];
+            for (var i = 0; i < n; i++) {
+                for (var j = 0; j < n; j++) {
+                    row.push(0);
+                }
+                grid.push(row);
+                row = [];
+            }
+            return grid;
+        }
+    }, {
+        key: 'validPosition',
+        value: function validPosition(coordinates, ship, axis) {
+            var i = 0;
+            if (axis === 'Horizontal') {
+                // check for overlapping ship
+                while (i < ship.length) {
+                    if (this.grid[coordinates[0]][coordinates[1] + i] === 1) {
+                        return false;
+                    };
+                    i++;
+                }
+                // check if out of bounds
+                if (coordinates[1] + ship.length <= this.grid[0].length) {
+                    return true;
+                }
+            } else {
+                while (i < ship.length) {
+                    if (this.grid[coordinates[0] + i][coordinates[1]] === 1) {
+                        return false;
+                    };
+                    i++;
+                }
+                if (coordinates[0] + ship.length <= this.grid.length) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }, {
+        key: 'placeShip',
+        value: function placeShip(startPos, ship, axis) {
+            ship.coordinates.push(startPos);
+            this.grid[startPos[0]][startPos[1]] = 1;
+
+            var i = 1;
+            if (axis === 'Horizontal') {
+                while (ship.coordinates.length < ship.length) {
+                    ship.coordinates.push([startPos[0], startPos[1] + i]);
+                    this.grid[startPos[0]][startPos[1] + i] = 1;
+                    i++;
+                }
+            } else {
+                while (ship.coordinates.length < ship.length) {
+                    ship.coordinates.push([startPos[0] + i, startPos[1]]);
+                    this.grid[startPos[0] + i][startPos[1]] = 1;
+                    i++;
+                }
+            }
+        }
     }]);
 
-    return Battleship;
+    return Board;
 }();
 
-module.exports = Battleship;
+module.exports = Board;
 
 /***/ })
 /******/ ]);

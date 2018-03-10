@@ -1,0 +1,25 @@
+#tables {
+    display: flex;
+}
+
+table {
+    background-color: lightblue;
+    border: 1px solid lightgray;
+    height: 40vh;
+    width: 40vh;
+    margin: 5vh 5vh;
+}
+
+table > tr {
+    height: 1vh;
+}
+
+table > tr > td {
+    border: 1px solid #80808036;
+    height: 1vh;
+    width: 1vh;
+}
+
+.occupied {
+    background-color: lightgray;   
+}

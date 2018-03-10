@@ -2,8 +2,6 @@ const Battleship = require('./battleship.js')
 
 document.addEventListener('DOMContentLoaded', () => {
     
-    let game = new Battleship();
-
-    game.start();
-
+    window.game = new Battleship();
+    game.playGameTest();
 });

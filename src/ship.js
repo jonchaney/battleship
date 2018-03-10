@@ -1,14 +1,14 @@
 class Ship {
     constructor(type, length) {
         this.length = length;
+        this.count = length;
         this.type = type;
         this.coordinates = [];
     }
 
     isSunk() {
-        if (this.length === 0) { return `You sunk my ${this.type}!`}
+        if (this.count === 0) { return true; }
     }
-
 }
 
 module.exports = Ship;

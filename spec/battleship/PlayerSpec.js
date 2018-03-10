@@ -7,7 +7,6 @@ describe("Player", () => {
     });
     
     describe("when player is instantiated", () => {
-
         it("should have a 10 x 10 grid", () => {
             let board = player.board;
             expect(board.grid.length).toEqual(10);
@@ -18,7 +17,6 @@ describe("Player", () => {
             let ships = player.ships;
             expect(ships.length).toEqual(5);
         });
-
     });
   
     // describe("when song has been paused", () => {
