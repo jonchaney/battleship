@@ -17,12 +17,19 @@ class Battleship {
     playGameTest() {
         this.playerOne = new Player('Philip');
         this.playerTwo = new Player('Harold'); 
+
         document.getElementsByClassName('form')[0].style = 'display:none'; // remove form 
         
         let play = this.playerOne.won() || this.playerTwo.won();
+
+
         this.displayBoard(this.playerOne);
         // place ships
         this.placeShips(this.playerOne);
+    }
+
+    setUpPlayerBoards(players) {
+
     }
     
     displayBoard(player) {
@@ -32,7 +39,6 @@ class Battleship {
     placeShips(player) {
         document.getElementById('message').innerHTML = `${player.name} place your`
         player.placeShips();
-        // this.playerTwo.placeShips();
     }
 
     getCoordinates(e) {

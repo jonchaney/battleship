@@ -113,13 +113,18 @@ var Battleship = function () {
         value: function playGameTest() {
             this.playerOne = new Player('Philip');
             this.playerTwo = new Player('Harold');
+
             document.getElementsByClassName('form')[0].style = 'display:none'; // remove form 
 
             var play = this.playerOne.won() || this.playerTwo.won();
+
             this.displayBoard(this.playerOne);
             // place ships
             this.placeShips(this.playerOne);
         }
+    }, {
+        key: 'setUpPlayerBoards',
+        value: function setUpPlayerBoards(players) {}
     }, {
         key: 'displayBoard',
         value: function displayBoard(player) {
@@ -130,7 +135,6 @@ var Battleship = function () {
         value: function placeShips(player) {
             document.getElementById('message').innerHTML = player.name + ' place your';
             player.placeShips();
-            // this.playerTwo.placeShips();
         }
     }, {
         key: 'getCoordinates',
@@ -186,7 +190,7 @@ var Player = function () {
             var loopShips = function loopShips(ships) {
                 document.getElementById('ship').innerHTML = ships[i].type + ' (length ' + ships[i].length + ')';
                 document.getElementById('tables').addEventListener('click', function (event) {
-                    placeSingleShip(event, ships[i], _this.board, function () {
+                    placeSingleShip(event.target.data, ships[i], _this.board, function () {
                         if (i < ships.length - 1) {
                             document.getElementById('ship').innerHTML = ships[i + 1].type + ' (length ' + ships[i + 1].length + ')';
                         }
@@ -195,12 +199,11 @@ var Player = function () {
                 });
             };
 
-            function placeSingleShip(event, ship, board, nextShip) {
-                var coordinates = event.target.data;
+            function placeSingleShip(coordinates, ship, board, nextShip) {
                 var axis = document.getElementById('axis').innerHTML;
                 if (board.validPosition(coordinates, ship, axis)) {
                     board.placeShip(coordinates, ship, axis);
-                    board.rerenderBoard();
+                    board.renderBoard();
                 } else {
                     console.log('invalid position');
                 }
@@ -323,8 +326,8 @@ var Board = function () {
             console.log(this.grid);
         }
     }, {
-        key: 'rerenderBoard',
-        value: function rerenderBoard() {
+        key: 'renderBoard',
+        value: function renderBoard() {
             var tables = document.getElementById('tables');
             tables.removeChild(tables.firstChild);
             this.display();
@@ -359,21 +362,23 @@ var Board = function () {
                     i++;
                 }
                 // check if out of bounds
-                if (coordinates[1] + ship.length <= this.grid[0].length) {
-                    return true;
+                if (coordinates[1] + ship.length > this.grid[0].length) {
+                    return false;
                 }
             } else {
-                while (i < ship.length) {
-                    if (this.grid[coordinates[0] + i][coordinates[1]] === 1) {
-                        return false;
-                    };
-                    i++;
-                }
-                if (coordinates[0] + ship.length <= this.grid.length) {
-                    return true;
+                // check if out of bounds
+                if (coordinates[0] + ship.length > this.grid.length) {
+                    return false;
+                } else {
+                    while (i < ship.length) {
+                        if (this.grid[coordinates[0] + i][coordinates[1]] === 1) {
+                            return false;
+                        }
+                        i++;
+                    }
                 }
             }
-            return false;
+            return true;
         }
     }, {
         key: 'placeShip',

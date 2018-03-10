@@ -13,19 +13,20 @@ class Player {
         let loopShips = (ships) => {
             document.getElementById('ship').innerHTML = `${ships[i].type} (length ${ships[i].length})`
             document.getElementById('tables').addEventListener('click', (event) => {
-                placeSingleShip(event, ships[i], this.board, () => {
-                    if (i < ships.length-1) { document.getElementById('ship').innerHTML = `${ships[i+1].type} (length ${ships[i+1].length})` }
+                placeSingleShip(event.target.data, ships[i], this.board, () => {
+                    if (i < ships.length - 1) { 
+                        document.getElementById('ship').innerHTML = `${ships[i+1].type} (length ${ships[i+1].length})` 
+                    }
                     i++;
                 });
             })
         }
     
-        function placeSingleShip(event, ship, board, nextShip) {
-            let coordinates = event.target.data;
+        function placeSingleShip(coordinates, ship, board, nextShip) {
             let axis = document.getElementById('axis').innerHTML;
             if (board.validPosition(coordinates, ship, axis)) {
                 board.placeShip(coordinates, ship, axis);
-                board.rerenderBoard();
+                board.renderBoard();
             } else {
                 console.log('invalid position');
             }

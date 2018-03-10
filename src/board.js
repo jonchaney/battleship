@@ -36,7 +36,7 @@ class Board {
         console.log(this.grid)
     }
 
-    rerenderBoard() {
+    renderBoard() {
         let tables = document.getElementById('tables');
         tables.removeChild(tables.firstChild);
         this.display();
@@ -62,26 +62,28 @@ class Board {
             // check for overlapping ship
             while (i < ship.length) {
                 if (this.grid[coordinates[0]][coordinates[1]+i] === 1){ 
-                    return false 
+                    return false; 
                 };
                 i++;
             }
             // check if out of bounds
-            if (coordinates[1] + ship.length <= this.grid[0].length) {
-                return true;
+            if (coordinates[1] + ship.length > this.grid[0].length) {
+                return false;
             }
-        } else {
-            while (i < ship.length) {
-                if (this.grid[coordinates[0]+i][coordinates[1]] === 1){ 
-                    return false 
-                };
-                i++;
-            }
-            if (coordinates[0] + ship.length <= this.grid.length) {
-                return true;
+        } else { 
+           // check if out of bounds
+           if(coordinates[0] + ship.length > this.grid.length) {
+               return false;
+           } else {
+                while (i < ship.length) {
+                    if (this.grid[coordinates[0]+i][coordinates[1]] === 1) {
+                        return false;
+                    }
+                    i++;
+                }
             }
         }
-        return false;
+        return true;
     }
 
     placeShip(startPos, ship, axis) {
