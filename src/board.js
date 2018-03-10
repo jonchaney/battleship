@@ -26,6 +26,7 @@ class Board {
 
                 if (this.grid[i][j] ===  1 && !this.gameStarted) {
                     td.classList.add('occupied');
+                    // td.innerHTML = '🚢';
                 }
                 tr.appendChild(td)
             })

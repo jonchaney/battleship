@@ -169,7 +169,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Board = __webpack_require__(4);
+var Board = __webpack_require__(3);
 
 var Player = function () {
     function Player(name) {
@@ -249,42 +249,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Ship = function () {
-    function Ship(type, length) {
-        _classCallCheck(this, Ship);
-
-        this.length = length;
-        this.count = length;
-        this.type = type;
-        this.coordinates = [];
-    }
-
-    _createClass(Ship, [{
-        key: "isSunk",
-        value: function isSunk() {
-            if (this.count === 0) {
-                return true;
-            }
-        }
-    }]);
-
-    return Ship;
-}();
-
-module.exports = Ship;
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Ship = __webpack_require__(3);
+var Ship = __webpack_require__(4);
 
 var Board = function () {
     function Board() {
@@ -316,6 +281,7 @@ var Board = function () {
 
                     if (_this.grid[i][j] === 1 && !_this.gameStarted) {
                         td.classList.add('occupied');
+                        // td.innerHTML = '🚢';
                     }
                     tr.appendChild(td);
                 });
@@ -407,6 +373,41 @@ var Board = function () {
 }();
 
 module.exports = Board;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Ship = function () {
+    function Ship(type, length) {
+        _classCallCheck(this, Ship);
+
+        this.length = length;
+        this.count = length;
+        this.type = type;
+        this.coordinates = [];
+    }
+
+    _createClass(Ship, [{
+        key: "isSunk",
+        value: function isSunk() {
+            if (this.count === 0) {
+                return true;
+            }
+        }
+    }]);
+
+    return Ship;
+}();
+
+module.exports = Ship;
 
 /***/ })
 /******/ ]);
