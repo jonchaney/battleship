@@ -2,43 +2,53 @@ const Player = require('./player.js');
 
 class Battleship {
     constructor() {
-        this.playerOne;
-        this.playerTwo;
+        this.players = [];
     }
     
     playGame(e) {
         e.preventDefault();
-        this.playerOne = new Player(e.target[0].value); // create players
-        this.playerTwo = new Player(e.target[1].value);
+        this.players = [new Player(e.target[0].value), new Player(e.target[1].value)]; // create players
         document.getElementsByClassName('form')[0].style = 'display:none';  // remove form
-        this.displayBoards(); 
+        this.setUpBoards();
     }
 
     playGameTest() {
-        this.playerOne = new Player('Philip');
-        this.playerTwo = new Player('Harold'); 
-
         document.getElementsByClassName('form')[0].style = 'display:none'; // remove form 
+        this.players.push(new Player('Philip'));
+        this.players.push(new Player('Jessica'));
         
-        let play = this.playerOne.won() || this.playerTwo.won();
-
-
-        this.displayBoard(this.playerOne);
-        // place ships
-        this.placeShips(this.playerOne);
-    }
-
-    setUpPlayerBoards(players) {
-
+        this.setUpBoards();
     }
     
     displayBoard(player) {
         player.displayBoard(player.name);
     }
 
-    placeShips(player) {
-        document.getElementById('message').innerHTML = `${player.name} place your`
-        player.placeShips();
+    setUpBoards() {
+        let i = 0;
+        let players = this.players;
+        document.getElementById('axis').innerHTML = 'Horizontal';
+        let loopPlayers = (players) => {
+            players[i].displayBoard();
+            document.getElementById('message').innerHTML = `${players[i].name} place your&nbsp;`
+        
+            arrangeBoard(players[i], () => {
+                console.log('arrange cb')
+                if (i >= players.length) { 
+                    console.log('done');
+                }
+                i++;
+            });
+        }
+    
+        function arrangeBoard(player, nextPlayer) {
+            player.placeShips();
+            if (player.board.shipsPlaced === 4) {
+                nextPlayer();
+            }
+        }
+
+        loopPlayers(players);   
     }
 
     getCoordinates(e) {

@@ -95,46 +95,58 @@ var Battleship = function () {
     function Battleship() {
         _classCallCheck(this, Battleship);
 
-        this.playerOne;
-        this.playerTwo;
+        this.players = [];
     }
 
     _createClass(Battleship, [{
         key: 'playGame',
         value: function playGame(e) {
             e.preventDefault();
-            this.playerOne = new Player(e.target[0].value); // create players
-            this.playerTwo = new Player(e.target[1].value);
+            this.players = [new Player(e.target[0].value), new Player(e.target[1].value)]; // create players
             document.getElementsByClassName('form')[0].style = 'display:none'; // remove form
-            this.displayBoards();
+            this.setUpBoards();
         }
     }, {
         key: 'playGameTest',
         value: function playGameTest() {
-            this.playerOne = new Player('Philip');
-            this.playerTwo = new Player('Harold');
-
             document.getElementsByClassName('form')[0].style = 'display:none'; // remove form 
+            this.players.push(new Player('Philip'));
+            this.players.push(new Player('Jessica'));
 
-            var play = this.playerOne.won() || this.playerTwo.won();
-
-            this.displayBoard(this.playerOne);
-            // place ships
-            this.placeShips(this.playerOne);
+            this.setUpBoards();
         }
-    }, {
-        key: 'setUpPlayerBoards',
-        value: function setUpPlayerBoards(players) {}
     }, {
         key: 'displayBoard',
         value: function displayBoard(player) {
             player.displayBoard(player.name);
         }
     }, {
-        key: 'placeShips',
-        value: function placeShips(player) {
-            document.getElementById('message').innerHTML = player.name + ' place your';
-            player.placeShips();
+        key: 'setUpBoards',
+        value: function setUpBoards() {
+            var i = 0;
+            var players = this.players;
+            document.getElementById('axis').innerHTML = 'Horizontal';
+            var loopPlayers = function loopPlayers(players) {
+                players[i].displayBoard();
+                document.getElementById('message').innerHTML = players[i].name + ' place your&nbsp;';
+
+                arrangeBoard(players[i], function () {
+                    console.log('arrange cb');
+                    if (i >= players.length) {
+                        console.log('done');
+                    }
+                    i++;
+                });
+            };
+
+            function arrangeBoard(player, nextPlayer) {
+                player.placeShips();
+                if (player.board.shipsPlaced === 4) {
+                    nextPlayer();
+                }
+            }
+
+            loopPlayers(players);
         }
     }, {
         key: 'getCoordinates',
@@ -188,13 +200,21 @@ var Player = function () {
             var i = 0;
             var ships = this.board.ships;
             var loopShips = function loopShips(ships) {
-                document.getElementById('ship').innerHTML = ships[i].type + ' (length ' + ships[i].length + ')';
+                if (_this.board.shipsPlaced === _this.board.ships.length - 1) {
+                    console.log('line 15');
+                    return;
+                }
+                ships[i].shipInfo(); // display ship information
                 document.getElementById('tables').addEventListener('click', function (event) {
                     placeSingleShip(event.target.data, ships[i], _this.board, function () {
-                        if (i < ships.length - 1) {
-                            document.getElementById('ship').innerHTML = ships[i + 1].type + ' (length ' + ships[i + 1].length + ')';
-                        }
                         i++;
+                        _this.board.shipsPlaced = i;
+                        if (_this.board.shipsPlaced === 5) {
+                            return;
+                        } else if (i < ships.length) {
+                            document.getElementById('ship').innerHTML = ships[i].type + ' (length ' + ships[i].length + ')';
+                        }
+                        console.log(i);
                     });
                 });
             };
@@ -203,15 +223,17 @@ var Player = function () {
                 var axis = document.getElementById('axis').innerHTML;
                 if (board.validPosition(coordinates, ship, axis)) {
                     board.placeShip(coordinates, ship, axis);
-                    board.renderBoard();
+                    board.updateBoard();
                 } else {
-                    console.log('invalid position');
+                    board.errors('invalid position');
                 }
-                if (ship.length === ship.coordinates.length) {
+                if (board.shipsPlaced === board.ships.length - 1) {
+
+                    return;
+                } else if (ship.length === ship.coordinates.length) {
                     nextShip();
                 }
             }
-
             loopShips(ships);
         }
     }, {
@@ -228,7 +250,7 @@ var Player = function () {
         }
     }, {
         key: 'displayBoard',
-        value: function displayBoard(name) {
+        value: function displayBoard() {
             this.board.display(this.name);
         }
     }]);
@@ -260,6 +282,7 @@ var Board = function () {
         this.grid = this.generateBoard(n);
         this.ships = [new Ship('Battleship', 4), new Ship('Cruiser', 3), new Ship('Carrier', 5), new Ship('Submarine', 3), new Ship('Destroyer', 2)];
         this.gameStarted = false;
+        this.shipsPlaced = 0;
     }
 
     _createClass(Board, [{
@@ -289,11 +312,10 @@ var Board = function () {
             });
             table.setAttribute('id', '' + name);
             tables.appendChild(table);
-            console.log(this.grid);
         }
     }, {
-        key: 'renderBoard',
-        value: function renderBoard() {
+        key: 'updateBoard',
+        value: function updateBoard() {
             var tables = document.getElementById('tables');
             tables.removeChild(tables.firstChild);
             this.display();
@@ -318,6 +340,7 @@ var Board = function () {
     }, {
         key: 'validPosition',
         value: function validPosition(coordinates, ship, axis) {
+            this.clearErrors(); // clear errors if any
             var i = 0;
             if (axis === 'Horizontal') {
                 // check for overlapping ship
@@ -327,12 +350,12 @@ var Board = function () {
                     };
                     i++;
                 }
-                // check if out of bounds
                 if (coordinates[1] + ship.length > this.grid[0].length) {
+                    // check if out of bounds
                     return false;
                 }
             } else {
-                // check if out of bounds
+                // check if valid position for vertical placement
                 if (coordinates[0] + ship.length > this.grid.length) {
                     return false;
                 } else {
@@ -349,11 +372,11 @@ var Board = function () {
     }, {
         key: 'placeShip',
         value: function placeShip(startPos, ship, axis) {
-            ship.coordinates.push(startPos);
-            this.grid[startPos[0]][startPos[1]] = 1;
+            this.grid[startPos[0]][startPos[1]] = 1; // add location data to grid
 
-            var i = 1;
+            var i = 0;
             if (axis === 'Horizontal') {
+                // add location data to ship
                 while (ship.coordinates.length < ship.length) {
                     ship.coordinates.push([startPos[0], startPos[1] + i]);
                     this.grid[startPos[0]][startPos[1] + i] = 1;
@@ -366,6 +389,16 @@ var Board = function () {
                     i++;
                 }
             }
+        }
+    }, {
+        key: 'errors',
+        value: function errors(error) {
+            document.getElementById('errors').innerHTML = '' + error;
+        }
+    }, {
+        key: 'clearErrors',
+        value: function clearErrors() {
+            document.getElementById('errors').innerHTML = '';
         }
     }]);
 
@@ -396,11 +429,16 @@ var Ship = function () {
     }
 
     _createClass(Ship, [{
-        key: "isSunk",
+        key: 'isSunk',
         value: function isSunk() {
             if (this.count === 0) {
                 return true;
             }
+        }
+    }, {
+        key: 'shipInfo',
+        value: function shipInfo() {
+            document.getElementById('ship').innerHTML = this.type + ' (length ' + this.length + ')';
         }
     }]);
 

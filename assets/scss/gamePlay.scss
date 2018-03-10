@@ -1,0 +1,25 @@
+.place-ships {
+    font-family: Lato;
+    display: flex;
+    flex-direction: column;
+    padding-top: 2vh;
+    section {
+        justify-content: center;
+        display: flex;
+        button {
+            font-family: Lato;
+            margin-top: 1vh;
+            font-size: 1.6vh;
+        }
+    }
+}
+
+#errors {
+    padding-top: 1vh;
+    height: 3vh;
+    text-align: center;
+    letter-spacing: .5px;
+    font-family: Lato;
+    font-size: 1.5vh;
+    color: red;
+}

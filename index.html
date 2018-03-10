@@ -5,26 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="./assets/js/bundle.js"></script>
-    <link rel="stylesheet" type="text/css" href="./assets/reset.css">
-    <link rel="stylesheet" type="text/css" href="./assets/main.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="./assets/css/bundle.css">
     <title>Battleship</title>
 </head>
 <body>
     <main id='main'>
         <h1>Battleship</h1>
+        <p id="errors"></p>
         <div class="form">
             <form onsubmit="game.playGame(event)">
-                <input type="text" placeholder="Player One's Name">
-                <input type="text" placeholder="Player Two's Name">
-                <input type="submit" value="Submit">
+                <input type="text" placeholder="enter player one's name">
+                <input type="text" placeholder="enter player two's name">
+                <div>
+                    <input type="submit" value="submit">
+                </div>
             </form> 
-          </div>
-          <div id="tables"></div>
-          <div class="place-ships">
-            <p id="message"></p>
-            <p id="ship"></p>
-            <button id="axis" onclick="game.setAxis()" type="button">Horizontal</button>
-          </div>
+            </div>
+            <div id="tables"></div>
+            <div class="place-ships">
+                <section>
+                    <p id="message"></p>
+                    <p id="ship"></p>
+                </section>
+                <section>
+                    <button id="axis" onclick="game.setAxis()" type="button"></button>
+                </section>
+            </div>
     </main>
 </body>
 </html>

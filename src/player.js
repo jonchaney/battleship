@@ -11,13 +11,21 @@ class Player {
         let i = 0;
         let ships = this.board.ships;
         let loopShips = (ships) => {
-            document.getElementById('ship').innerHTML = `${ships[i].type} (length ${ships[i].length})`
+            if (this.board.shipsPlaced === this.board.ships.length-1) { 
+                console.log('line 15');
+                return; 
+            }
+            ships[i].shipInfo(); // display ship information
             document.getElementById('tables').addEventListener('click', (event) => {
                 placeSingleShip(event.target.data, ships[i], this.board, () => {
-                    if (i < ships.length - 1) { 
-                        document.getElementById('ship').innerHTML = `${ships[i+1].type} (length ${ships[i+1].length})` 
-                    }
                     i++;
+                    this.board.shipsPlaced = i;
+                    if (this.board.shipsPlaced === 5) { 
+                        return;
+                    } else if (i < ships.length) { 
+                        document.getElementById('ship').innerHTML = `${ships[i].type} (length ${ships[i].length})` 
+                    } 
+                    console.log(i);
                 });
             })
         }
@@ -26,16 +34,18 @@ class Player {
             let axis = document.getElementById('axis').innerHTML;
             if (board.validPosition(coordinates, ship, axis)) {
                 board.placeShip(coordinates, ship, axis);
-                board.renderBoard();
+                board.updateBoard();
             } else {
-                console.log('invalid position');
+                board.errors('invalid position');
             }
-            if (ship.length === ship.coordinates.length) {
+            if (board.shipsPlaced === board.ships.length-1) {
+
+                return;
+            } else if (ship.length === ship.coordinates.length) {
                 nextShip();
             } 
         }
-
-        loopShips(ships);            
+        loopShips(ships);         
     }
 
     makeMove() {
@@ -50,7 +60,7 @@ class Player {
         }
     }
 
-    displayBoard(name) {
+    displayBoard() {
         this.board.display(this.name);
     }
 }

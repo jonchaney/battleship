@@ -1,0 +1,143 @@
+/* Based on the classic meyerweb reset,
+http://meyerweb.com/eric/tools/css/reset/
+Bootstrap's 'normalize'
+https://github.com/twbs/bootstrap-sass/blob/master/vendor/assets/stylesheets/bootstrap/_normalize.scss
+*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, address, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0; }
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+  display: block; }
+
+audio,
+canvas,
+progress,
+video {
+  display: inline-block;
+  vertical-align: baseline; }
+
+del {
+  text-decoration: line-through; }
+
+/*//
+// Remove the gray background color from active links in IE 10.
+//*/
+a {
+  background: transparent; }
+
+li {
+  list-style: none; }
+
+/*//
+// 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
+//    and `video` controls.
+// 2. Correct inability to style clickable `input` types in iOS.
+// 3. Improve usability and consistency of cursor style between image-type
+//    `input` and others.
+//*/
+button,
+html input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  -webkit-appearance: button;
+  cursor: pointer; }
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+  outline: none; }
+
+#tables {
+  display: flex;
+  justify-content: center; }
+  #tables table {
+    background-color: lightblue;
+    border: 1px solid lightgray;
+    height: 40vh;
+    width: 40vh; }
+    #tables table tr {
+      height: 1vh; }
+      #tables table tr td {
+        border: 1px solid #80808036;
+        height: 1vh;
+        width: 1vh; }
+      #tables table tr .occupied {
+        background-color: lightgray;
+        height: 1vh; }
+
+.form {
+  justify-content: center;
+  display: flex; }
+  .form form {
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    padding-top: 3vh;
+    width: 40%; }
+    .form form input {
+      font-family: Lato, sans-serif;
+      border: 0;
+      border-bottom: 1px solid lightgray;
+      font-size: 2vh;
+      text-align: center;
+      margin: 1vh 0 0 0;
+      margin-bottom: 2vh;
+      padding-bottom: .5vh; }
+    .form form div {
+      display: flex;
+      justify-content: center; }
+      .form form div input {
+        border: 1px solid lightgray;
+        width: 58%;
+        background-color: lightblue;
+        padding: .75vh; }
+
+.place-ships {
+  font-family: Lato;
+  display: flex;
+  flex-direction: column;
+  padding-top: 2vh; }
+  .place-ships section {
+    justify-content: center;
+    display: flex; }
+    .place-ships section button {
+      font-family: Lato;
+      margin-top: 1vh;
+      font-size: 1.6vh; }
+
+#errors {
+  padding-top: 1vh;
+  height: 3vh;
+  text-align: center;
+  letter-spacing: .5px;
+  font-family: Lato;
+  font-size: 1.5vh;
+  color: red; }
+
+h1 {
+  font-family: Lato, sans-serif;
+  text-align: center;
+  margin-top: 2vh; }
+
+/*# sourceMappingURL=bundle.css.map */

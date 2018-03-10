@@ -9,6 +9,7 @@ class Board {
                       new Ship('Submarine', 3),
                       new Ship('Destroyer', 2)];
         this.gameStarted = false;
+        this.shipsPlaced = 0;
     }
 
     display(name) {
@@ -34,10 +35,9 @@ class Board {
         });
         table.setAttribute('id',`${name}`);
         tables.appendChild(table);
-        console.log(this.grid)
     }
 
-    renderBoard() {
+    updateBoard() {
         let tables = document.getElementById('tables');
         tables.removeChild(tables.firstChild);
         this.display();
@@ -58,21 +58,19 @@ class Board {
     }
 
     validPosition(coordinates, ship, axis) {
+        this.clearErrors(); // clear errors if any
         let i = 0;
-        if (axis === 'Horizontal') {
-            // check for overlapping ship
+        if (axis === 'Horizontal') { // check for overlapping ship
             while (i < ship.length) {
                 if (this.grid[coordinates[0]][coordinates[1]+i] === 1){ 
                     return false; 
                 };
                 i++;
             }
-            // check if out of bounds
-            if (coordinates[1] + ship.length > this.grid[0].length) {
+            if (coordinates[1] + ship.length > this.grid[0].length) { // check if out of bounds
                 return false;
             }
-        } else { 
-           // check if out of bounds
+        } else { // check if valid position for vertical placement
            if(coordinates[0] + ship.length > this.grid.length) {
                return false;
            } else {
@@ -88,11 +86,10 @@ class Board {
     }
 
     placeShip(startPos, ship, axis) {
-        ship.coordinates.push(startPos);
-        this.grid[startPos[0]][startPos[1]] = 1;
+        this.grid[startPos[0]][startPos[1]] = 1; // add location data to grid
 
-        let i = 1;
-        if (axis === 'Horizontal') {
+        let i = 0;
+        if (axis === 'Horizontal') { // add location data to ship
             while (ship.coordinates.length < ship.length) {
                 ship.coordinates.push([startPos[0],startPos[1]+i])
                 this.grid[startPos[0]][startPos[1]+i] = 1;
@@ -105,6 +102,14 @@ class Board {
                 i++;
             }
         }
+    }
+
+    errors(error) {
+        document.getElementById('errors').innerHTML = `${error}`;
+    }
+
+    clearErrors() {
+        document.getElementById('errors').innerHTML = '';
     }
 
 }
