@@ -15,10 +15,10 @@ class Player {
         let loopShips = (ships) => { 
             ships[i].shipInfo(); // display ship information
             document.getElementById(`${this.name}`).addEventListener('click', (event) => { 
-                if (i !== 5) { // don't respond to onclick if all ships placed
+                if (i !== 5) { // only respond to onclick if all ships placed
                     placeSingleShip(event.target.data, ships[i], () => {
                         i++;
-                        if (i === 5) {                  // if all ships are placed
+                        if (i === 5) {                  `// if all ships are placed
                             setTimeout(() => {          // set time out for UI/UX purposes
                                 Util.remove(this.name); // remove board from DOM
                                 shipsPlaced();          // call back function
