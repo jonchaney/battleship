@@ -8,7 +8,7 @@ class Board {
                       new Ship('Carrier', 5),
                       new Ship('Submarine', 3),
                       new Ship('Destroyer', 2)];
-        this.gameStarted = false;
+        this.shipsSunk = 0;
     }
 
     display(name) {
@@ -17,7 +17,6 @@ class Board {
         if (!table) { // if it does not exist create a new one
             table = document.createElement('table');;
         } 
-
         let tr; // row
         let td; // column
 
@@ -30,7 +29,6 @@ class Board {
 
                 if (this.grid[i][j] ===  1 && !this.gameStarted) {
                     td.classList.add('occupied');
-                    // td.innerHTML = '🚢';
                 }
                 tr.appendChild(td)
             })
@@ -63,7 +61,7 @@ class Board {
     }
 
     validPosition(coordinates, ship, axis) {
-        this.clearErrors(); // clear errors if any
+        this.clearErrors(); // clear errors
         let i = 0;
         if (axis === 'Horizontal') { // check for overlapping ship
             while (i < ship.length) {

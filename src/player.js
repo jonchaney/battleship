@@ -1,5 +1,5 @@
 const Board = require('./board.js');
-
+const Util = require('./util.js')
 class Player {
     constructor(name) {
         this.name = name;
@@ -10,33 +10,34 @@ class Player {
     placeShips(nextPlayer) {
         let i = 0;
         let ships = this.board.ships;
-        document.getElementById('message').innerHTML = `${this.name} place your&nbsp;`
-        let loopShips = (ships) => {
+        document.getElementById('message').innerHTML = `${this.name} place your&nbsp;` // tell player which ship to place
+        let loopShips = (ships) => { 
             ships[i].shipInfo(); // display ship information
             document.getElementById(`${this.name}`).addEventListener('click', (event) => { 
-                if (i === 5) {return;} // don't respond to onclick if all ships placed
-                placeSingleShip(event.target.data, ships[i], this.board, this.name, () => {
-                    i++;
-                    if (i === 5) { 
-                        setTimeout(() => {
-                            this.board.remove(this.name);
-                            nextPlayer();
-                        }, 500);
-                        return;
-                    } else if (i < ships.length) { 
-                        document.getElementById('ship').innerHTML = `${ships[i].type} (length ${ships[i].length})` 
-                    } 
-                });
-            })
+                if (i !== 5) { // don't respond to onclick if all ships placed
+                    placeSingleShip(event.target.data, ships[i], () => {
+                        i++;
+                        if (i === 5) { // if all ships are placed, remove board and invoke call back function
+                            setTimeout(() => { // set time out for UI/UX purposes
+                                Util.remove(this.name);
+                                nextPlayer();
+                            }, 500);
+                        } else { 
+                            document.getElementById('ship').innerHTML = `${ships[i].type} (length ${ships[i].length})` 
+                        } 
+                    });
+                }
+            });
+
         }
     
-        function placeSingleShip(coordinates, ship, board, name, nextShip) {
+        const placeSingleShip = (coordinates, ship, nextShip) => {
             let axis = document.getElementById('axis').innerHTML;
-            if (board.validPosition(coordinates, ship, axis)) {
-                board.placeShip(coordinates, ship, axis);
-                board.updateBoard(name);
+            if (this.board.validPosition(coordinates, ship, axis)) {
+                this.board.placeShip(coordinates, ship, axis);
+                this.board.updateBoard(this.name);
             } else {
-                board.errors('invalid position');
+                this.board.errors('invalid position');
             }
             if (ship.length === ship.coordinates.length) {
                 nextShip();
@@ -46,7 +47,7 @@ class Player {
     }
 
     won() {
-        if(this.board.ships.count === 5) {
+        if(this.board.shipsSunk === 5) {
             return false;
         } else {
             return true;

@@ -72,6 +72,7 @@ button:focus {
   display: flex;
   justify-content: center; }
   #tables table {
+    border-collapse: collapse;
     background-color: lightblue;
     border: 1px solid lightgray;
     height: 40vh;
@@ -85,33 +86,6 @@ button:focus {
       #tables table tr .occupied {
         background-color: lightgray;
         height: 1vh; }
-
-.form {
-  justify-content: center;
-  display: flex; }
-  .form form {
-    justify-content: center;
-    display: flex;
-    flex-direction: column;
-    padding-top: 3vh;
-    width: 40%; }
-    .form form input {
-      font-family: Lato, sans-serif;
-      border: 0;
-      border-bottom: 1px solid lightgray;
-      font-size: 2vh;
-      text-align: center;
-      margin: 1vh 0 0 0;
-      margin-bottom: 2vh;
-      padding-bottom: .5vh; }
-    .form form div {
-      display: flex;
-      justify-content: center; }
-      .form form div input {
-        border: 1px solid lightgray;
-        width: 58%;
-        background-color: lightblue;
-        padding: .75vh; }
 
 #place-ships {
   font-family: Lato;

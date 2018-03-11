@@ -1,44 +1,42 @@
 const Player = require('./player.js');
+const Util = require('./util.js')
 
 class Battleship {
     constructor() {
         this.players = [];
     }
     
-    playGame(e) {
-        e.preventDefault();
-        this.players = [new Player(e.target[0].value), new Player(e.target[1].value)]; // create players
-        document.getElementsByClassName('form')[0].style = 'display:none';  // remove form
-        this.setUpBoards();
-    }
-
-    playGameTest() {
+    playGame() {
         document.getElementsByClassName('form')[0].style = 'display:none'; // remove form 
-        this.players.push(new Player('Philip'));
-        this.players.push(new Player('Jessica'));
-        
+        this.players.push(new Player('Player One'));
+        this.players.push(new Player('Player Two'));
         this.setUpBoards(this.players);
     }
-    
+
+    battleship() {
+        // start battling
+        console.log('start battle');
+    }
+
     displayBoard(player) {
         player.displayBoard(player.name);
     }
 
     setUpBoards(players) {
         let i = 0;
-        function setUpBoard(nextPlayer){
+        const setUpBoard = (nextPlayer) => { 
             document.getElementById('axis').innerHTML = 'Horizontal';
             players[i].displayBoard();
             players[i].placeShips(() => nextPlayer());   
             i++;
         }
         
-        function nextPlayer(){
+        const nextPlayer = () => {
             setUpBoard(() => {
-                console.log('boards set up')
+                Util.remove('place-ships')
+                this.battleship();
             });    
         }
-
         setUpBoard(() => nextPlayer());
     }
 

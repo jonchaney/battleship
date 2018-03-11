@@ -73,9 +73,8 @@
 var Battleship = __webpack_require__(1);
 
 document.addEventListener('DOMContentLoaded', function () {
-
     window.game = new Battleship();
-    game.playGameTest();
+    game.playGame();
 });
 
 /***/ }),
@@ -90,6 +89,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Player = __webpack_require__(2);
+var Util = __webpack_require__(5);
 
 var Battleship = function () {
     function Battleship() {
@@ -100,20 +100,17 @@ var Battleship = function () {
 
     _createClass(Battleship, [{
         key: 'playGame',
-        value: function playGame(e) {
-            e.preventDefault();
-            this.players = [new Player(e.target[0].value), new Player(e.target[1].value)]; // create players
-            document.getElementsByClassName('form')[0].style = 'display:none'; // remove form
-            this.setUpBoards();
+        value: function playGame() {
+            document.getElementsByClassName('form')[0].style = 'display:none'; // remove form 
+            this.players.push(new Player('Player One'));
+            this.players.push(new Player('Player Two'));
+            this.setUpBoards(this.players);
         }
     }, {
-        key: 'playGameTest',
-        value: function playGameTest() {
-            document.getElementsByClassName('form')[0].style = 'display:none'; // remove form 
-            this.players.push(new Player('Philip'));
-            this.players.push(new Player('Jessica'));
-
-            this.setUpBoards(this.players);
+        key: 'battleship',
+        value: function battleship() {
+            // start battling
+            console.log('start battle');
         }
     }, {
         key: 'displayBoard',
@@ -123,22 +120,24 @@ var Battleship = function () {
     }, {
         key: 'setUpBoards',
         value: function setUpBoards(players) {
+            var _this = this;
+
             var i = 0;
-            function setUpBoard(nextPlayer) {
+            var setUpBoard = function setUpBoard(nextPlayer) {
                 document.getElementById('axis').innerHTML = 'Horizontal';
                 players[i].displayBoard();
                 players[i].placeShips(function () {
                     return nextPlayer();
                 });
                 i++;
-            }
+            };
 
-            function nextPlayer() {
+            var nextPlayer = function nextPlayer() {
                 setUpBoard(function () {
-                    console.log('boards set up');
+                    Util.remove('place-ships');
+                    _this.battleship();
                 });
-            }
-
+            };
             setUpBoard(function () {
                 return nextPlayer();
             });
@@ -172,6 +171,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Board = __webpack_require__(3);
+var Util = __webpack_require__(5);
 
 var Player = function () {
     function Player(name) {
@@ -189,46 +189,47 @@ var Player = function () {
 
             var i = 0;
             var ships = this.board.ships;
-            document.getElementById('message').innerHTML = this.name + ' place your&nbsp;';
+            document.getElementById('message').innerHTML = this.name + ' place your&nbsp;'; // tell player which ship to place
             var loopShips = function loopShips(ships) {
                 ships[i].shipInfo(); // display ship information
                 document.getElementById('' + _this.name).addEventListener('click', function (event) {
-                    if (i === 5) {
-                        return;
-                    } // don't respond to onclick if all ships placed
-                    placeSingleShip(event.target.data, ships[i], _this.board, _this.name, function () {
-                        i++;
-                        if (i === 5) {
-                            setTimeout(function () {
-                                _this.board.remove(_this.name);
-                                nextPlayer();
-                            }, 500);
-                            return;
-                        } else if (i < ships.length) {
-                            document.getElementById('ship').innerHTML = ships[i].type + ' (length ' + ships[i].length + ')';
-                        }
-                    });
+                    if (i !== 5) {
+                        // don't respond to onclick if all ships placed
+                        placeSingleShip(event.target.data, ships[i], function () {
+                            i++;
+                            if (i === 5) {
+                                // if all ships are placed, remove board and invoke call back function
+                                setTimeout(function () {
+                                    // set time out for UI/UX purposes
+                                    Util.remove(_this.name);
+                                    nextPlayer();
+                                }, 500);
+                            } else {
+                                document.getElementById('ship').innerHTML = ships[i].type + ' (length ' + ships[i].length + ')';
+                            }
+                        });
+                    }
                 });
             };
 
-            function placeSingleShip(coordinates, ship, board, name, nextShip) {
+            var placeSingleShip = function placeSingleShip(coordinates, ship, nextShip) {
                 var axis = document.getElementById('axis').innerHTML;
-                if (board.validPosition(coordinates, ship, axis)) {
-                    board.placeShip(coordinates, ship, axis);
-                    board.updateBoard(name);
+                if (_this.board.validPosition(coordinates, ship, axis)) {
+                    _this.board.placeShip(coordinates, ship, axis);
+                    _this.board.updateBoard(_this.name);
                 } else {
-                    board.errors('invalid position');
+                    _this.board.errors('invalid position');
                 }
                 if (ship.length === ship.coordinates.length) {
                     nextShip();
                 }
-            }
+            };
             loopShips(ships);
         }
     }, {
         key: 'won',
         value: function won() {
-            if (this.board.ships.count === 5) {
+            if (this.board.shipsSunk === 5) {
                 return false;
             } else {
                 return true;
@@ -267,7 +268,7 @@ var Board = function () {
 
         this.grid = this.generateBoard(n);
         this.ships = [new Ship('Battleship', 4), new Ship('Cruiser', 3), new Ship('Carrier', 5), new Ship('Submarine', 3), new Ship('Destroyer', 2)];
-        this.gameStarted = false;
+        this.shipsSunk = 0;
     }
 
     _createClass(Board, [{
@@ -281,7 +282,6 @@ var Board = function () {
                 // if it does not exist create a new one
                 table = document.createElement('table');;
             }
-
             var tr = void 0; // row
             var td = void 0; // column
 
@@ -294,7 +294,6 @@ var Board = function () {
 
                     if (_this.grid[i][j] === 1 && !_this.gameStarted) {
                         td.classList.add('occupied');
-                        // td.innerHTML = '🚢';
                     }
                     tr.appendChild(td);
                 });
@@ -332,7 +331,7 @@ var Board = function () {
     }, {
         key: 'validPosition',
         value: function validPosition(coordinates, ship, axis) {
-            this.clearErrors(); // clear errors if any
+            this.clearErrors(); // clear errors
             var i = 0;
             if (axis === 'Horizontal') {
                 // check for overlapping ship
@@ -444,6 +443,20 @@ var Ship = function () {
 }();
 
 module.exports = Ship;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var remove = function remove(id) {
+    var element = document.getElementById("" + id);
+    element.parentNode.removeChild(element);
+};
+
+exports.remove = remove;
 
 /***/ })
 /******/ ]);
