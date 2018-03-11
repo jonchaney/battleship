@@ -18,7 +18,7 @@ class Player {
                 if (i !== 5) { // only respond to onclick if all ships placed
                     placeSingleShip(event.target.data, ships[i], () => {
                         i++;
-                        if (i === 5) {                  `// if all ships are placed
+                        if (i === 5) {                  // if all ships are placed
                             setTimeout(() => {          // set time out for UI/UX purposes
                                 Util.remove(this.name); // remove board from DOM
                                 shipsPlaced();          // call back function
