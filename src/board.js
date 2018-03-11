@@ -37,10 +37,10 @@ class Board {
         tables.appendChild(table);
     }
 
-    updateBoard() {
+    updateBoard(name) {
         let tables = document.getElementById('tables');
         tables.removeChild(tables.firstChild);
-        this.display();
+        this.display(name);
     }
 
     // time complexity to generate board is O(n^2)
@@ -110,6 +110,12 @@ class Board {
 
     clearErrors() {
         document.getElementById('errors').innerHTML = '';
+    }
+
+    remove(name) {
+        let board = document.getElementById(`${name}`);
+        board.parentNode.removeChild(board);
+        console.log(board.parentNode);
     }
 
 }

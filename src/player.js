@@ -7,20 +7,18 @@ class Player {
         this.shipsSunk = 0;
     }
 
-    placeShips() {
+    placeShips(nextPlayer) {
         let i = 0;
         let ships = this.board.ships;
+        document.getElementById('message').innerHTML = `${this.name} place your&nbsp;`
         let loopShips = (ships) => {
-            if (this.board.shipsPlaced === this.board.ships.length-1) { 
-                console.log('line 15');
-                return; 
-            }
             ships[i].shipInfo(); // display ship information
             document.getElementById('tables').addEventListener('click', (event) => {
-                placeSingleShip(event.target.data, ships[i], this.board, () => {
+                placeSingleShip(event.target.data, ships[i], this.board, this.name, () => {
                     i++;
                     this.board.shipsPlaced = i;
                     if (this.board.shipsPlaced === 5) { 
+                        nextPlayer();
                         return;
                     } else if (i < ships.length) { 
                         document.getElementById('ship').innerHTML = `${ships[i].type} (length ${ships[i].length})` 
@@ -30,18 +28,15 @@ class Player {
             })
         }
     
-        function placeSingleShip(coordinates, ship, board, nextShip) {
+        function placeSingleShip(coordinates, ship, board, name, nextShip) {
             let axis = document.getElementById('axis').innerHTML;
             if (board.validPosition(coordinates, ship, axis)) {
                 board.placeShip(coordinates, ship, axis);
-                board.updateBoard();
+                board.updateBoard(name);
             } else {
                 board.errors('invalid position');
             }
-            if (board.shipsPlaced === board.ships.length-1) {
-
-                return;
-            } else if (ship.length === ship.coordinates.length) {
+            if (ship.length === ship.coordinates.length) {
                 nextShip();
             } 
         }

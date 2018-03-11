@@ -113,7 +113,7 @@ var Battleship = function () {
             this.players.push(new Player('Philip'));
             this.players.push(new Player('Jessica'));
 
-            this.setUpBoards();
+            this.setUpBoards(this.players);
         }
     }, {
         key: 'displayBoard',
@@ -122,36 +122,32 @@ var Battleship = function () {
         }
     }, {
         key: 'setUpBoards',
-        value: function setUpBoards() {
+        value: function setUpBoards(players) {
             var i = 0;
-            var players = this.players;
-            document.getElementById('axis').innerHTML = 'Horizontal';
-            var loopPlayers = function loopPlayers(players) {
+            function firstFunction(nextPlayer) {
+                // do some asynchronous work
+                // and when the asynchronous stuff is complete
+                console.log('setUp', i);
+                document.getElementById('axis').innerHTML = 'Horizontal';
                 players[i].displayBoard();
-                document.getElementById('message').innerHTML = players[i].name + ' place your&nbsp;';
-
-                arrangeBoard(players[i], function () {
-                    console.log('arrange cb');
-                    if (i >= players.length) {
-                        console.log('done');
-                    }
-                    i++;
+                players[i].placeShips(function () {
+                    return nextPlayer();
                 });
-            };
-
-            function arrangeBoard(player, nextPlayer) {
-                player.placeShips();
-                if (player.board.shipsPlaced === 4) {
-                    nextPlayer();
-                }
+                i++;
             }
 
-            loopPlayers(players);
-        }
-    }, {
-        key: 'getCoordinates',
-        value: function getCoordinates(e) {
-            console.log(e.target.data);
+            function secondFunction() {
+                // call first function and pass in a callback function which
+                // first function runs when it has completed
+                console.log('done');
+                firstFunction(function () {
+                    console.log('huzzah, I\'m done!');
+                });
+            }
+
+            firstFunction(function () {
+                return secondFunction();
+            });
         }
     }, {
         key: 'setAxis',
@@ -194,22 +190,20 @@ var Player = function () {
 
     _createClass(Player, [{
         key: 'placeShips',
-        value: function placeShips() {
+        value: function placeShips(nextPlayer) {
             var _this = this;
 
             var i = 0;
             var ships = this.board.ships;
+            document.getElementById('message').innerHTML = this.name + ' place your&nbsp;';
             var loopShips = function loopShips(ships) {
-                if (_this.board.shipsPlaced === _this.board.ships.length - 1) {
-                    console.log('line 15');
-                    return;
-                }
                 ships[i].shipInfo(); // display ship information
                 document.getElementById('tables').addEventListener('click', function (event) {
-                    placeSingleShip(event.target.data, ships[i], _this.board, function () {
+                    placeSingleShip(event.target.data, ships[i], _this.board, _this.name, function () {
                         i++;
                         _this.board.shipsPlaced = i;
                         if (_this.board.shipsPlaced === 5) {
+                            nextPlayer();
                             return;
                         } else if (i < ships.length) {
                             document.getElementById('ship').innerHTML = ships[i].type + ' (length ' + ships[i].length + ')';
@@ -219,18 +213,15 @@ var Player = function () {
                 });
             };
 
-            function placeSingleShip(coordinates, ship, board, nextShip) {
+            function placeSingleShip(coordinates, ship, board, name, nextShip) {
                 var axis = document.getElementById('axis').innerHTML;
                 if (board.validPosition(coordinates, ship, axis)) {
                     board.placeShip(coordinates, ship, axis);
-                    board.updateBoard();
+                    board.updateBoard(name);
                 } else {
                     board.errors('invalid position');
                 }
-                if (board.shipsPlaced === board.ships.length - 1) {
-
-                    return;
-                } else if (ship.length === ship.coordinates.length) {
+                if (ship.length === ship.coordinates.length) {
                     nextShip();
                 }
             }
@@ -315,10 +306,10 @@ var Board = function () {
         }
     }, {
         key: 'updateBoard',
-        value: function updateBoard() {
+        value: function updateBoard(name) {
             var tables = document.getElementById('tables');
             tables.removeChild(tables.firstChild);
-            this.display();
+            this.display(name);
         }
 
         // time complexity to generate board is O(n^2)
@@ -399,6 +390,13 @@ var Board = function () {
         key: 'clearErrors',
         value: function clearErrors() {
             document.getElementById('errors').innerHTML = '';
+        }
+    }, {
+        key: 'remove',
+        value: function remove(name) {
+            var board = document.getElementById('' + name);
+            board.parentNode.removeChild(board);
+            console.log(board.parentNode);
         }
     }]);
 

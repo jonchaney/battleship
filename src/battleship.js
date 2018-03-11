@@ -17,42 +17,35 @@ class Battleship {
         this.players.push(new Player('Philip'));
         this.players.push(new Player('Jessica'));
         
-        this.setUpBoards();
+        this.setUpBoards(this.players);
     }
     
     displayBoard(player) {
         player.displayBoard(player.name);
     }
 
-    setUpBoards() {
+    setUpBoards(players) {
         let i = 0;
-        let players = this.players;
-        document.getElementById('axis').innerHTML = 'Horizontal';
-        let loopPlayers = (players) => {
+        function firstFunction(nextPlayer){
+            // do some asynchronous work
+            // and when the asynchronous stuff is complete
+            console.log('setUp', i)
+            document.getElementById('axis').innerHTML = 'Horizontal';
             players[i].displayBoard();
-            document.getElementById('message').innerHTML = `${players[i].name} place your&nbsp;`
+            players[i].placeShips(() => nextPlayer());   
+            i++;
+        }
         
-            arrangeBoard(players[i], () => {
-                console.log('arrange cb')
-                if (i >= players.length) { 
-                    console.log('done');
-                }
-                i++;
-            });
-        }
-    
-        function arrangeBoard(player, nextPlayer) {
-            player.placeShips();
-            if (player.board.shipsPlaced === 4) {
-                nextPlayer();
-            }
+        function secondFunction(){
+            // call first function and pass in a callback function which
+            // first function runs when it has completed
+            console.log('done')
+            firstFunction(function() {
+                console.log('huzzah, I\'m done!');
+            });    
         }
 
-        loopPlayers(players);   
-    }
-
-    getCoordinates(e) {
-        console.log(e.target.data)
+        firstFunction(() => secondFunction());
     }
 
     setAxis() {
