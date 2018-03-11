@@ -1,5 +1,6 @@
 const Board = require('./board.js');
-const Util = require('./util.js')
+const Util = require('./util.js');
+
 class Player {
     constructor(name) {
         this.name = name;
@@ -7,7 +8,7 @@ class Player {
         this.shipsSunk = 0;
     }
 
-    placeShips(nextPlayer) {
+    placeShips(shipsPlaced) {
         let i = 0;
         let ships = this.board.ships;
         document.getElementById('message').innerHTML = `${this.name} place your&nbsp;` // tell player which ship to place
@@ -17,10 +18,10 @@ class Player {
                 if (i !== 5) { // don't respond to onclick if all ships placed
                     placeSingleShip(event.target.data, ships[i], () => {
                         i++;
-                        if (i === 5) { // if all ships are placed, remove board and invoke call back function
-                            setTimeout(() => { // set time out for UI/UX purposes
-                                Util.remove(this.name);
-                                nextPlayer();
+                        if (i === 5) {                  // if all ships are placed
+                            setTimeout(() => {          // set time out for UI/UX purposes
+                                Util.remove(this.name); // remove board from DOM
+                                shipsPlaced();          // call back function
                             }, 500);
                         } else { 
                             document.getElementById('ship').innerHTML = `${ships[i].type} (length ${ships[i].length})` 

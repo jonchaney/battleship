@@ -92,13 +92,13 @@ class Board {
         this.grid[startPos[0]][startPos[1]] = 1; // add location data to grid
 
         let i = 0;
-        if (axis === 'Horizontal') { // add location data to ship
+        if (axis === 'Horizontal') { 
             while (ship.coordinates.length < ship.length) {
-                ship.coordinates.push([startPos[0],startPos[1]+i])
-                this.grid[startPos[0]][startPos[1]+i] = 1;
+                ship.coordinates.push([startPos[0],startPos[1]+i]) // add location data to ship
+                this.grid[startPos[0]][startPos[1]+i] = 1;         // update grid
                 i++;
             }
-        } else {
+        } else { // vertical placement
             while (ship.coordinates.length < ship.length) {
                 ship.coordinates.push([startPos[0]+i,startPos[1]])
                 this.grid[startPos[0]+i][startPos[1]] = 1;
@@ -114,12 +114,6 @@ class Board {
     clearErrors() {
         document.getElementById('errors').innerHTML = '';
     }
-
-    remove(id) {
-        let element = document.getElementById(`${id}`);
-        element.parentNode.removeChild(element);
-    }
-
 }
 
 module.exports = Board;

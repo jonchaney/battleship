@@ -107,9 +107,8 @@ var Battleship = function () {
             this.setUpBoards(this.players);
         }
     }, {
-        key: 'battleship',
-        value: function battleship() {
-            // start battling
+        key: 'battle',
+        value: function battle() {
             console.log('start battle');
         }
     }, {
@@ -124,7 +123,6 @@ var Battleship = function () {
 
             var i = 0;
             var setUpBoard = function setUpBoard(nextPlayer) {
-                document.getElementById('axis').innerHTML = 'Horizontal';
                 players[i].displayBoard();
                 players[i].placeShips(function () {
                     return nextPlayer();
@@ -134,8 +132,8 @@ var Battleship = function () {
 
             var nextPlayer = function nextPlayer() {
                 setUpBoard(function () {
-                    Util.remove('place-ships');
-                    _this.battleship();
+                    Util.toggleElement('place-ships');
+                    _this.battle();
                 });
             };
             setUpBoard(function () {
@@ -184,7 +182,7 @@ var Player = function () {
 
     _createClass(Player, [{
         key: 'placeShips',
-        value: function placeShips(nextPlayer) {
+        value: function placeShips(shipsPlaced) {
             var _this = this;
 
             var i = 0;
@@ -198,11 +196,11 @@ var Player = function () {
                         placeSingleShip(event.target.data, ships[i], function () {
                             i++;
                             if (i === 5) {
-                                // if all ships are placed, remove board and invoke call back function
+                                // if all ships are placed
                                 setTimeout(function () {
                                     // set time out for UI/UX purposes
-                                    Util.remove(_this.name);
-                                    nextPlayer();
+                                    Util.remove(_this.name); // remove board from DOM
+                                    shipsPlaced(); // call back function
                                 }, 500);
                             } else {
                                 document.getElementById('ship').innerHTML = ships[i].type + ' (length ' + ships[i].length + ')';
@@ -367,13 +365,13 @@ var Board = function () {
 
             var i = 0;
             if (axis === 'Horizontal') {
-                // add location data to ship
                 while (ship.coordinates.length < ship.length) {
-                    ship.coordinates.push([startPos[0], startPos[1] + i]);
-                    this.grid[startPos[0]][startPos[1] + i] = 1;
+                    ship.coordinates.push([startPos[0], startPos[1] + i]); // add location data to ship
+                    this.grid[startPos[0]][startPos[1] + i] = 1; // update grid
                     i++;
                 }
             } else {
+                // vertical placement
                 while (ship.coordinates.length < ship.length) {
                     ship.coordinates.push([startPos[0] + i, startPos[1]]);
                     this.grid[startPos[0] + i][startPos[1]] = 1;
@@ -390,12 +388,6 @@ var Board = function () {
         key: 'clearErrors',
         value: function clearErrors() {
             document.getElementById('errors').innerHTML = '';
-        }
-    }, {
-        key: 'remove',
-        value: function remove(id) {
-            var element = document.getElementById('' + id);
-            element.parentNode.removeChild(element);
         }
     }]);
 
@@ -456,7 +448,17 @@ var remove = function remove(id) {
     element.parentNode.removeChild(element);
 };
 
+var toggleElement = function toggleElement(id) {
+    var element = document.getElementById("" + id);
+    if (element.style.display === "none") {
+        element.style.display = "";
+    } else {
+        element.style.display = 'none';
+    }
+};
+
 exports.remove = remove;
+exports.toggleElement = toggleElement;
 
 /***/ })
 /******/ ]);

@@ -13,8 +13,7 @@ class Battleship {
         this.setUpBoards(this.players);
     }
 
-    battleship() {
-        // start battling
+    battle() {
         console.log('start battle');
     }
 
@@ -25,7 +24,6 @@ class Battleship {
     setUpBoards(players) {
         let i = 0;
         const setUpBoard = (nextPlayer) => { 
-            document.getElementById('axis').innerHTML = 'Horizontal';
             players[i].displayBoard();
             players[i].placeShips(() => nextPlayer());   
             i++;
@@ -33,8 +31,8 @@ class Battleship {
         
         const nextPlayer = () => {
             setUpBoard(() => {
-                Util.remove('place-ships')
-                this.battleship();
+                Util.toggleElement('place-ships')
+                this.battle();
             });    
         }
         setUpBoard(() => nextPlayer());
