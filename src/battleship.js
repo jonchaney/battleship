@@ -14,7 +14,7 @@ class Battleship {
     }
 
     battle() {
-        console.log('start battle');
+        this.players[0].makeMove(this.players[1]);
     }
 
     displayBoard(player) {

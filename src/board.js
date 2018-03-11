@@ -9,6 +9,7 @@ class Board {
                       new Ship('Submarine', 3),
                       new Ship('Destroyer', 2)];
         this.shipsSunk = 0;
+        this.gameStarted = false;
     }
 
     display(name) {
@@ -26,9 +27,8 @@ class Board {
             row.forEach((col, j) => {
                 td = document.createElement('td');
                 td.data = [i,j]
-
-                if (this.grid[i][j] ===  1 && !this.gameStarted) {
-                    td.classList.add('occupied');
+                if (this.grid[i][j] ===  1 && !this.gameStarted) { // only show where ships are placed if 
+                    td.classList.add('occupied');                  // game has not started
                 }
                 tr.appendChild(td)
             })

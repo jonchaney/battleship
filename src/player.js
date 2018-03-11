@@ -21,6 +21,7 @@ class Player {
                         if (i === 5) {                  // if all ships are placed
                             setTimeout(() => {          // set time out for UI/UX purposes
                                 Util.remove(this.name); // remove board from DOM
+                                this.board.gameStarted = true;
                                 shipsPlaced();          // call back function
                             }, 500);
                         } else { 
@@ -29,7 +30,6 @@ class Player {
                     });
                 }
             });
-
         }
     
         const placeSingleShip = (coordinates, ship, nextShip) => {
@@ -47,11 +47,51 @@ class Player {
         loopShips(ships);         
     }
 
-    won() {
+    makeMove(opposingPlayer, callback) {
+        opposingPlayer.displayBoard();
+        document.getElementById('attack').innerHTML = `${this.name} make your move, attack!` // tell player to attack
+        const move = (opposingPlayer) => { 
+            document.getElementById(`${opposingPlayer.name}`).addEventListener('click', (event) => { 
+                console.log(event.target.data)
+                // check if hit, miss, already taken
+                
+                // then check if sunk
+                // then check if won
+                // display information and invoke callback function
+                // placeSingleShip(event.target.data, ships[i], () => {
+                //     i++;
+                //     if (i === 5) {                  // if all ships are placed
+                //         setTimeout(() => {          // set time out for UI/UX purposes
+                //             Util.remove(this.name); // remove board from DOM
+                //             this.board.gameStarted = true;
+                //             shipsPlaced();          // call back function
+                //         }, 500);
+                //     } else { 
+                //         document.getElementById('ship').innerHTML = `${ships[i].type} (length ${ships[i].length})` 
+                //     } 
+                // });
+            });
+            // const placeSingleShip = (coordinates, ship, nextShip) => {
+                // let axis = document.getElementById('axis').innerHTML;
+                // if (this.board.validPosition(coordinates, ship, axis)) {
+                //     this.board.placeShip(coordinates, ship, axis);
+                //     this.board.updateBoard(this.name);
+                // } else {
+                //     this.board.errors('invalid position');
+                // }
+                // if (ship.length === ship.coordinates.length) {
+                //     nextShip();
+                // } 
+            // }
+        }
+        move(opposingPlayer);      
+    }
+
+    lost() {
         if(this.board.shipsSunk === 5) {
-            return false;
-        } else {
             return true;
+        } else {
+            return false;
         }
     }
 

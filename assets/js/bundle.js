@@ -109,7 +109,7 @@ var Battleship = function () {
     }, {
         key: 'battle',
         value: function battle() {
-            console.log('start battle');
+            this.players[0].makeMove(this.players[1]);
         }
     }, {
         key: 'displayBoard',
@@ -200,6 +200,7 @@ var Player = function () {
                                 setTimeout(function () {
                                     // set time out for UI/UX purposes
                                     Util.remove(_this.name); // remove board from DOM
+                                    _this.board.gameStarted = true;
                                     shipsPlaced(); // call back function
                                 }, 500);
                             } else {
@@ -225,12 +226,53 @@ var Player = function () {
             loopShips(ships);
         }
     }, {
-        key: 'won',
-        value: function won() {
+        key: 'makeMove',
+        value: function makeMove(opposingPlayer, callback) {
+            opposingPlayer.displayBoard();
+            document.getElementById('attack').innerHTML = this.name + ' make your move, attack!'; // tell player to attack
+            var move = function move(opposingPlayer) {
+                document.getElementById('' + opposingPlayer.name).addEventListener('click', function (event) {
+                    console.log(event.target.data);
+                    // check if hit, miss, already taken
+
+                    // then check if sunk
+                    // then check if won
+                    // display information and invoke callback function
+                    // placeSingleShip(event.target.data, ships[i], () => {
+                    //     i++;
+                    //     if (i === 5) {                  // if all ships are placed
+                    //         setTimeout(() => {          // set time out for UI/UX purposes
+                    //             Util.remove(this.name); // remove board from DOM
+                    //             this.board.gameStarted = true;
+                    //             shipsPlaced();          // call back function
+                    //         }, 500);
+                    //     } else { 
+                    //         document.getElementById('ship').innerHTML = `${ships[i].type} (length ${ships[i].length})` 
+                    //     } 
+                    // });
+                });
+                // const placeSingleShip = (coordinates, ship, nextShip) => {
+                // let axis = document.getElementById('axis').innerHTML;
+                // if (this.board.validPosition(coordinates, ship, axis)) {
+                //     this.board.placeShip(coordinates, ship, axis);
+                //     this.board.updateBoard(this.name);
+                // } else {
+                //     this.board.errors('invalid position');
+                // }
+                // if (ship.length === ship.coordinates.length) {
+                //     nextShip();
+                // } 
+                // }
+            };
+            move(opposingPlayer);
+        }
+    }, {
+        key: 'lost',
+        value: function lost() {
             if (this.board.shipsSunk === 5) {
-                return false;
-            } else {
                 return true;
+            } else {
+                return false;
             }
         }
     }, {
@@ -267,6 +309,7 @@ var Board = function () {
         this.grid = this.generateBoard(n);
         this.ships = [new Ship('Battleship', 4), new Ship('Cruiser', 3), new Ship('Carrier', 5), new Ship('Submarine', 3), new Ship('Destroyer', 2)];
         this.shipsSunk = 0;
+        this.gameStarted = false;
     }
 
     _createClass(Board, [{
@@ -289,9 +332,9 @@ var Board = function () {
                 row.forEach(function (col, j) {
                     td = document.createElement('td');
                     td.data = [i, j];
-
                     if (_this.grid[i][j] === 1 && !_this.gameStarted) {
-                        td.classList.add('occupied');
+                        // only show where ships are placed if 
+                        td.classList.add('occupied'); // game has not started
                     }
                     tr.appendChild(td);
                 });
