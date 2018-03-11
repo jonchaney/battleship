@@ -113,15 +113,15 @@ button:focus {
         background-color: lightblue;
         padding: .75vh; }
 
-.place-ships {
+#place-ships {
   font-family: Lato;
   display: flex;
   flex-direction: column;
   padding-top: 2vh; }
-  .place-ships section {
+  #place-ships section {
     justify-content: center;
     display: flex; }
-    .place-ships section button {
+    #place-ships section button {
       font-family: Lato;
       margin-top: 1vh;
       font-size: 1.6vh; }

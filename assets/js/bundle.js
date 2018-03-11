@@ -124,10 +124,7 @@ var Battleship = function () {
         key: 'setUpBoards',
         value: function setUpBoards(players) {
             var i = 0;
-            function firstFunction(nextPlayer) {
-                // do some asynchronous work
-                // and when the asynchronous stuff is complete
-                console.log('setUp', i);
+            function setUpBoard(nextPlayer) {
                 document.getElementById('axis').innerHTML = 'Horizontal';
                 players[i].displayBoard();
                 players[i].placeShips(function () {
@@ -136,22 +133,19 @@ var Battleship = function () {
                 i++;
             }
 
-            function secondFunction() {
-                // call first function and pass in a callback function which
-                // first function runs when it has completed
-                console.log('done');
-                firstFunction(function () {
-                    console.log('huzzah, I\'m done!');
+            function nextPlayer() {
+                setUpBoard(function () {
+                    console.log('boards set up');
                 });
             }
 
-            firstFunction(function () {
-                return secondFunction();
+            setUpBoard(function () {
+                return nextPlayer();
             });
         }
     }, {
-        key: 'setAxis',
-        value: function setAxis() {
+        key: 'toggleAxis',
+        value: function toggleAxis() {
             var axis = document.getElementById('axis');
             if (axis.innerHTML === "Horizontal") {
                 axis.innerHTML = 'Vertical';
@@ -198,17 +192,21 @@ var Player = function () {
             document.getElementById('message').innerHTML = this.name + ' place your&nbsp;';
             var loopShips = function loopShips(ships) {
                 ships[i].shipInfo(); // display ship information
-                document.getElementById('tables').addEventListener('click', function (event) {
+                document.getElementById('' + _this.name).addEventListener('click', function (event) {
+                    if (i === 5) {
+                        return;
+                    } // don't respond to onclick if all ships placed
                     placeSingleShip(event.target.data, ships[i], _this.board, _this.name, function () {
                         i++;
-                        _this.board.shipsPlaced = i;
-                        if (_this.board.shipsPlaced === 5) {
-                            nextPlayer();
+                        if (i === 5) {
+                            setTimeout(function () {
+                                _this.board.remove(_this.name);
+                                nextPlayer();
+                            }, 500);
                             return;
                         } else if (i < ships.length) {
                             document.getElementById('ship').innerHTML = ships[i].type + ' (length ' + ships[i].length + ')';
                         }
-                        console.log(i);
                     });
                 });
             };
@@ -227,9 +225,6 @@ var Player = function () {
             }
             loopShips(ships);
         }
-    }, {
-        key: 'makeMove',
-        value: function makeMove() {}
     }, {
         key: 'won',
         value: function won() {
@@ -273,7 +268,6 @@ var Board = function () {
         this.grid = this.generateBoard(n);
         this.ships = [new Ship('Battleship', 4), new Ship('Cruiser', 3), new Ship('Carrier', 5), new Ship('Submarine', 3), new Ship('Destroyer', 2)];
         this.gameStarted = false;
-        this.shipsPlaced = 0;
     }
 
     _createClass(Board, [{
@@ -281,8 +275,13 @@ var Board = function () {
         value: function display(name) {
             var _this = this;
 
-            var tables = document.getElementById('tables');
-            var table = document.createElement('table');
+            var tables = document.getElementById('tables'); // get container
+            var table = document.getElementById('' + name);
+            if (!table) {
+                // if it does not exist create a new one
+                table = document.createElement('table');;
+            }
+
             var tr = void 0; // row
             var td = void 0; // column
 
@@ -307,8 +306,10 @@ var Board = function () {
     }, {
         key: 'updateBoard',
         value: function updateBoard(name) {
-            var tables = document.getElementById('tables');
-            tables.removeChild(tables.firstChild);
+            var table = document.getElementById('' + name);
+            while (table.firstChild) {
+                table.removeChild(table.firstChild);
+            }
             this.display(name);
         }
 
@@ -393,10 +394,9 @@ var Board = function () {
         }
     }, {
         key: 'remove',
-        value: function remove(name) {
-            var board = document.getElementById('' + name);
-            board.parentNode.removeChild(board);
-            console.log(board.parentNode);
+        value: function remove(id) {
+            var element = document.getElementById('' + id);
+            element.parentNode.removeChild(element);
         }
     }]);
 

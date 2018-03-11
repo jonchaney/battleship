@@ -13,17 +13,19 @@ class Player {
         document.getElementById('message').innerHTML = `${this.name} place your&nbsp;`
         let loopShips = (ships) => {
             ships[i].shipInfo(); // display ship information
-            document.getElementById('tables').addEventListener('click', (event) => {
+            document.getElementById(`${this.name}`).addEventListener('click', (event) => { 
+                if (i === 5) {return;} // don't respond to onclick if all ships placed
                 placeSingleShip(event.target.data, ships[i], this.board, this.name, () => {
                     i++;
-                    this.board.shipsPlaced = i;
-                    if (this.board.shipsPlaced === 5) { 
-                        nextPlayer();
+                    if (i === 5) { 
+                        setTimeout(() => {
+                            this.board.remove(this.name);
+                            nextPlayer();
+                        }, 500);
                         return;
                     } else if (i < ships.length) { 
                         document.getElementById('ship').innerHTML = `${ships[i].type} (length ${ships[i].length})` 
                     } 
-                    console.log(i);
                 });
             })
         }
@@ -41,10 +43,6 @@ class Player {
             } 
         }
         loopShips(ships);         
-    }
-
-    makeMove() {
-
     }
 
     won() {

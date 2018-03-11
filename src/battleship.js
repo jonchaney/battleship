@@ -26,29 +26,23 @@ class Battleship {
 
     setUpBoards(players) {
         let i = 0;
-        function firstFunction(nextPlayer){
-            // do some asynchronous work
-            // and when the asynchronous stuff is complete
-            console.log('setUp', i)
+        function setUpBoard(nextPlayer){
             document.getElementById('axis').innerHTML = 'Horizontal';
             players[i].displayBoard();
             players[i].placeShips(() => nextPlayer());   
             i++;
         }
         
-        function secondFunction(){
-            // call first function and pass in a callback function which
-            // first function runs when it has completed
-            console.log('done')
-            firstFunction(function() {
-                console.log('huzzah, I\'m done!');
+        function nextPlayer(){
+            setUpBoard(() => {
+                console.log('boards set up')
             });    
         }
 
-        firstFunction(() => secondFunction());
+        setUpBoard(() => nextPlayer());
     }
 
-    setAxis() {
+    toggleAxis() {
         let axis = document.getElementById('axis');
         if (axis.innerHTML === "Horizontal") {
             axis.innerHTML = 'Vertical';
@@ -56,7 +50,6 @@ class Battleship {
             axis.innerHTML = 'Horizontal';
         }
     }
-
 }
 
 module.exports = Battleship;

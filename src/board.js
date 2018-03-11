@@ -9,12 +9,15 @@ class Board {
                       new Ship('Submarine', 3),
                       new Ship('Destroyer', 2)];
         this.gameStarted = false;
-        this.shipsPlaced = 0;
     }
 
     display(name) {
-        let tables = document.getElementById('tables');
-        let table = document.createElement('table')
+        let tables = document.getElementById('tables'); // get container
+        let table = document.getElementById(`${name}`) 
+        if (!table) { // if it does not exist create a new one
+            table = document.createElement('table');;
+        } 
+
         let tr; // row
         let td; // column
 
@@ -38,8 +41,10 @@ class Board {
     }
 
     updateBoard(name) {
-        let tables = document.getElementById('tables');
-        tables.removeChild(tables.firstChild);
+        let table = document.getElementById(`${name}`);
+        while (table.firstChild) {
+            table.removeChild(table.firstChild);
+        }
         this.display(name);
     }
 
@@ -112,10 +117,9 @@ class Board {
         document.getElementById('errors').innerHTML = '';
     }
 
-    remove(name) {
-        let board = document.getElementById(`${name}`);
-        board.parentNode.removeChild(board);
-        console.log(board.parentNode);
+    remove(id) {
+        let element = document.getElementById(`${id}`);
+        element.parentNode.removeChild(element);
     }
 
 }
