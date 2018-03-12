@@ -196,7 +196,6 @@ var Battleship = function () {
         key: 'setUpBoards',
         value: function setUpBoards(players, startBattle) {
             var i = 0;
-            console.log(this.players);
             var setUpBoard = function setUpBoard(nextPlayer) {
                 players[i].displayBoard();
                 players[i].placeShips(function () {

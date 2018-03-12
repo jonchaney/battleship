@@ -44,7 +44,6 @@ class Battleship {
 
     setUpBoards(players, startBattle) {
         let i = 0;
-        console.log(this.players)
         const setUpBoard = (nextPlayer) => { 
             players[i].displayBoard();
             players[i].placeShips(() => nextPlayer());   
