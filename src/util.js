@@ -26,7 +26,12 @@ const changeInnerHtml = (id, str) => {
     document.getElementById(`${id}`).innerHTML = `${str}`;
 }
 
+const clearInnerHtml = (id) => {
+    document.getElementById(id).innerHTML = "";
+}
+
 exports.remove = remove;
 exports.toggleElement = toggleElement;
 exports.compareArray = compareArray;
 exports.changeInnerHtml = changeInnerHtml;
+exports.clearInnerHtml = clearInnerHtml;

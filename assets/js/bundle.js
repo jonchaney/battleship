@@ -98,10 +98,15 @@ var changeInnerHtml = function changeInnerHtml(id, str) {
     document.getElementById("" + id).innerHTML = "" + str;
 };
 
+var clearInnerHtml = function clearInnerHtml(id) {
+    document.getElementById(id).innerHTML = "";
+};
+
 exports.remove = remove;
 exports.toggleElement = toggleElement;
 exports.compareArray = compareArray;
 exports.changeInnerHtml = changeInnerHtml;
+exports.clearInnerHtml = clearInnerHtml;
 
 /***/ }),
 /* 1 */
@@ -154,6 +159,7 @@ var Battleship = function () {
 
             var i = 0;
             var j = 1;
+            Util.toggleElement('attack');
             var move = function move(players, nextPlayer) {
                 var player = players[i % 2];
                 var opposingPlayer = players[j % 2];
@@ -165,11 +171,10 @@ var Battleship = function () {
             var nextPlayer = function nextPlayer() {
                 var gameOver = _this2.players[0].lost() || _this2.players[1].lost();
                 if (gameOver) {
-                    Util.remove('attack'); // move this to different area of code.
-                    if (_this2.players[0].lost()) {
-                        _this2.displayWinner(_this2.players[0]);
-                    } else {
-                        _this2.displayWinner(_this2.players[1]);
+                    Util.toggleElement('attack'); // move this to different area of code.
+                    if (gameOver) {
+                        _this2.displayWinner(_this2.players);
+                        _this2.playAgain();
                     }
                 } else {
                     move(_this2.players, function () {
@@ -191,6 +196,7 @@ var Battleship = function () {
         key: 'setUpBoards',
         value: function setUpBoards(players, startBattle) {
             var i = 0;
+            console.log(this.players);
             var setUpBoard = function setUpBoard(nextPlayer) {
                 players[i].displayBoard();
                 players[i].placeShips(function () {
@@ -222,8 +228,29 @@ var Battleship = function () {
         }
     }, {
         key: 'displayWinner',
-        value: function displayWinner(player) {
-            Util.changeInnerHtml('winner', player.name + ' is the winner!');
+        value: function displayWinner(players) {
+            if (this.players[0].lost()) {
+                Util.changeInnerHtml('winner', players[1].name + ' is the winner!');
+            } else {
+                Util.changeInnerHtml('winner', players[0].name + ' is the winner!');
+            }
+        }
+    }, {
+        key: 'playAgain',
+        value: function playAgain() {
+            Util.toggleElement('play-again');
+        }
+    }, {
+        key: 'restartGame',
+        value: function restartGame(n) {
+            // clear player boards
+            this.players.forEach(function (player) {
+                player.resetBoard(n);
+            });
+            Util.clearInnerHtml('winner');
+            Util.toggleElement('play-again');
+            Util.toggleElement('place-ships');
+            this.playGame();
         }
     }]);
 
@@ -275,7 +302,7 @@ var Player = function () {
                                     // set time out for UI/UX purposes
                                     Util.remove(_this.name); // remove board from DOM
                                     _this.board.gameStarted = true;
-                                    shipsPlaced();
+                                    shipsPlaced(); // call back function
                                 }, 1000);
                             } else {
                                 document.getElementById('ship').innerHTML = ships[i].type + ' (length ' + ships[i].length + ')';
@@ -337,6 +364,11 @@ var Player = function () {
             }
         }
     }, {
+        key: 'resetBoard',
+        value: function resetBoard(n) {
+            this.board.reset(n);
+        }
+    }, {
         key: 'displayBoard',
         value: function displayBoard() {
             this.board.display(this.name);
@@ -357,8 +389,6 @@ module.exports = Player;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _util = __webpack_require__(0);
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Ship = __webpack_require__(5);
@@ -370,7 +400,7 @@ var Board = function () {
 
         _classCallCheck(this, Board);
 
-        this.grid = this.generateBoard(n);
+        this.generateBoard(n);
         this.ships = [new Ship('Battleship', 4), new Ship('Cruiser', 3), new Ship('Carrier', 5), new Ship('Submarine', 3), new Ship('Destroyer', 2)];
         this.gameStarted = false;
         this.shipsSunk = 0;
@@ -421,21 +451,20 @@ var Board = function () {
             this.display(name);
         }
 
-        // time complexity to generate a 10x10 board is O(n^2)
+        // time complexity to generate an NxN board is O(n^2)
 
     }, {
         key: 'generateBoard',
         value: function generateBoard(n) {
             var row = [];
-            var grid = [];
+            this.grid = [];
             for (var i = 0; i < n; i++) {
                 for (var j = 0; j < n; j++) {
                     row.push(0);
                 }
-                grid.push(row);
+                this.grid.push(row);
                 row = [];
             }
-            return grid;
         }
     }, {
         key: 'validPosition',
@@ -531,6 +560,22 @@ var Board = function () {
                     }
                 });
             });
+        }
+    }, {
+        key: 'clearShipCoordinates',
+        value: function clearShipCoordinates() {
+            this.ships.forEach(function (ship) {
+                ship.coordinates = [];
+                ship.count = 0;
+            });
+        }
+    }, {
+        key: 'reset',
+        value: function reset(n) {
+            this.generateBoard(n);
+            this.gameStarted = false;
+            this.shipsSunk = 0;
+            this.clearShipCoordinates();
         }
     }, {
         key: 'attackInfo',

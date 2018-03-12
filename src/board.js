@@ -1,11 +1,9 @@
-import { compareArray } from './util.js';
-
 const Ship = require('./ship.js');
 const Util = require('./util.js');
 
 class Board {
     constructor(n = 10) {
-        this.grid = this.generateBoard(n);
+        this.generateBoard(n);
         this.ships = [new Ship('Battleship', 4),
                       new Ship('Cruiser', 3),
                       new Ship('Carrier', 5),
@@ -53,18 +51,17 @@ class Board {
         this.display(name);
     }
 
-    // time complexity to generate a 10x10 board is O(n^2)
+    // time complexity to generate an NxN board is O(n^2)
     generateBoard(n) {
         let row = [];
-        let grid = [];
+        this.grid = [];
         for (let i = 0; i < n; i++) {
             for (let j = 0; j < n; j++) {
                 row.push(0);
             }
-            grid.push(row);
+            this.grid.push(row);
             row = [];
         }
-        return grid;
     }
 
     validPosition(coordinates, ship, axis) {
@@ -149,6 +146,20 @@ class Board {
                 }
             })
         })
+    }
+
+    clearShipCoordinates() {
+        this.ships.forEach((ship) => {
+            ship.coordinates = [];
+            ship.count = 0;
+        });
+    }
+
+    reset(n) {
+        this.generateBoard(n);
+        this.gameStarted = false;
+        this.shipsSunk = 0;
+        this.clearShipCoordinates();
     }
 
     attackInfo(msg) {

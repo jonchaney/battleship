@@ -13,6 +13,7 @@ class Battleship {
     battle() {
         let i = 0;
         let j = 1;
+        Util.toggleElement('attack');
         const move = (players, nextPlayer) => { 
             let player = players[i%2];
             let opposingPlayer = players[j%2];
@@ -24,12 +25,11 @@ class Battleship {
         const nextPlayer = () => {
             let gameOver = this.players[0].lost() || this.players[1].lost()
             if(gameOver) {
-                Util.remove('attack'); // move this to different area of code.
-                if (this.players[0].lost()) {
-                    this.displayWinner(this.players[0])
-                } else {
-                    this.displayWinner(this.players[1])
-                }
+                Util.toggleElement('attack'); // move this to different area of code.
+                if (gameOver) {
+                    this.displayWinner(this.players)
+                    this.playAgain();
+                } 
             } else {
                 move(this.players, () => nextPlayer());    
             }
@@ -44,6 +44,7 @@ class Battleship {
 
     setUpBoards(players, startBattle) {
         let i = 0;
+        console.log(this.players)
         const setUpBoard = (nextPlayer) => { 
             players[i].displayBoard();
             players[i].placeShips(() => nextPlayer());   
@@ -69,8 +70,27 @@ class Battleship {
         }
     }
 
-    displayWinner(player) {
-        Util.changeInnerHtml('winner',`${player.name} is the winner!`);
+    displayWinner(players) {
+        if (this.players[0].lost()) {
+            Util.changeInnerHtml('winner',`${players[1].name} is the winner!`);
+        } else {
+            Util.changeInnerHtml('winner',`${players[0].name} is the winner!`);
+        }
+    }
+
+    playAgain() {
+        Util.toggleElement('play-again');
+    }
+
+    restartGame(n) {
+        // clear player boards
+        this.players.forEach((player) => {
+            player.resetBoard(n);
+        })
+        Util.clearInnerHtml('winner');
+        Util.toggleElement('play-again');
+        Util.toggleElement('place-ships')
+        this.playGame();
     }
 }
 

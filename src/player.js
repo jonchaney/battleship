@@ -20,8 +20,8 @@ class Player {
                         if (i === this.board.ships.length) {   // if all ships are placed 
                             setTimeout(() => {                 // set time out for UI/UX purposes
                                 Util.remove(this.name);        // remove board from DOM
-                                this.board.gameStarted = true;
-                                shipsPlaced();         
+                                this.board.gameStarted = true; 
+                                shipsPlaced();                 // call back function
                             }, 1000);
                         } else { 
                             document.getElementById('ship').innerHTML = `${ships[i].type} (length ${ships[i].length})` 
@@ -79,6 +79,10 @@ class Player {
         } else {
             return false;
         }
+    }
+
+    resetBoard(n) {
+        this.board.reset(n)
     }
 
     displayBoard() {

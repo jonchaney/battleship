@@ -14,10 +14,17 @@
     }
 }
 
+#play-again {
+    font-family: Lato;
+    display: flex;
+    margin-top: 8vh;
+    margin: 1vh auto;
+    justify-content: center;
+}
+
 #make-move, #winner {
     font-family: Lato;
     display: flex;
-    padding-top: 2vh;
     justify-content: center;
     section {
         display: flex;
