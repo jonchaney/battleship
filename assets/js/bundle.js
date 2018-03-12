@@ -70,11 +70,13 @@
 "use strict";
 
 
+// remove element from the dom
 var remove = function remove(id) {
     var element = document.getElementById("" + id);
     element.parentNode.removeChild(element);
 };
 
+// toggle display style of element
 var toggleElement = function toggleElement(id) {
     var element = document.getElementById("" + id);
     if (element.style.display === "none") {
@@ -163,12 +165,12 @@ var Battleship = function () {
             var nextPlayer = function nextPlayer() {
                 var gameOver = _this2.players[0].lost() || _this2.players[1].lost();
                 if (gameOver) {
+                    Util.remove('attack'); // move this to different area of code.
                     if (_this2.players[0].lost()) {
                         _this2.displayWinner(_this2.players[0]);
                     } else {
                         _this2.displayWinner(_this2.players[1]);
                     }
-                    Util.remove('attack');
                 } else {
                     move(_this2.players, function () {
                         return nextPlayer();
@@ -268,12 +270,12 @@ var Player = function () {
                         placeSingleShip(event.target.data, ships[i], function () {
                             i++;
                             if (i === _this.board.ships.length) {
-                                // if all ships are placed
+                                // if all ships are placed 
                                 setTimeout(function () {
                                     // set time out for UI/UX purposes
                                     Util.remove(_this.name); // remove board from DOM
                                     _this.board.gameStarted = true;
-                                    shipsPlaced(); // call back function
+                                    shipsPlaced();
                                 }, 1000);
                             } else {
                                 document.getElementById('ship').innerHTML = ships[i].type + ' (length ' + ships[i].length + ')';
@@ -388,15 +390,14 @@ var Board = function () {
             var tr = void 0; // row
             var td = void 0; // column
 
-            // time complecity to render board to DOM is O(n^2)
             this.grid.forEach(function (row, i) {
                 tr = document.createElement('tr');
                 row.forEach(function (col, j) {
                     td = document.createElement('td');
                     td.data = [i, j];
                     if (_this.grid[i][j] === 1 && !_this.gameStarted) {
-                        // only show where ships are placed if 
-                        td.classList.add('occupied'); // game has not started
+                        // only show where ships are placed if game has not started
+                        td.classList.add('occupied');
                     } else if (_this.grid[i][j] === 'o') {
                         td.classList.add('missed');
                     } else if (_this.grid[i][j] === 'x') {
@@ -414,14 +415,13 @@ var Board = function () {
         value: function updateBoard(name) {
             var table = document.getElementById('' + name);
             // remove all the chldren (rows) and update board
-            // removing all children is O(n)
             while (table.firstChild) {
                 table.removeChild(table.firstChild);
             }
             this.display(name);
         }
 
-        // time complexity to generate board is O(n^2)
+        // time complexity to generate a 10x10 board is O(n^2)
 
     }, {
         key: 'generateBoard',
@@ -440,7 +440,7 @@ var Board = function () {
     }, {
         key: 'validPosition',
         value: function validPosition(coordinates, ship, axis) {
-            this.clearErrors(); // clear errors
+            this.clearErrors();
             var i = 0;
             if (axis === 'Horizontal') {
                 // check for overlapping ship
@@ -475,6 +475,7 @@ var Board = function () {
             this.grid[startPos[0]][startPos[1]] = 1; // add location data to grid
             var i = 0;
             if (axis === 'Horizontal') {
+                // horizontal ship placement
                 while (ship.coordinates.length < ship.length) {
                     ship.coordinates.push([startPos[0], startPos[1] + i]); // add location data to ship
                     this.grid[startPos[0]][startPos[1] + i] = 1; // update grid

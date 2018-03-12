@@ -17,11 +17,11 @@ class Player {
                 if (i !== this.board.ships.length) { // only respond to onclick if all ships placed
                     placeSingleShip(event.target.data, ships[i], () => {
                         i++;
-                        if (i === this.board.ships.length) {                  // if all ships are placed
-                            setTimeout(() => {          // set time out for UI/UX purposes
-                                Util.remove(this.name); // remove board from DOM
+                        if (i === this.board.ships.length) {   // if all ships are placed 
+                            setTimeout(() => {                 // set time out for UI/UX purposes
+                                Util.remove(this.name);        // remove board from DOM
                                 this.board.gameStarted = true;
-                                shipsPlaced();          // call back function
+                                shipsPlaced();         
                             }, 1000);
                         } else { 
                             document.getElementById('ship').innerHTML = `${ships[i].type} (length ${ships[i].length})` 

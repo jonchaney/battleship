@@ -1,8 +1,10 @@
+// remove element from the dom
 const remove = (id) => {
     let element = document.getElementById(`${id}`);
     element.parentNode.removeChild(element);
 };
 
+// toggle display style of element
 const toggleElement = (id) => {
     let element = document.getElementById(`${id}`);
     if (element.style.display === "none") {

@@ -24,14 +24,13 @@ class Board {
         let tr; // row
         let td; // column
 
-        // time complecity to render board to DOM is O(n^2)
         this.grid.forEach((row, i) => {
             tr = document.createElement('tr');
             row.forEach((col, j) => {
                 td = document.createElement('td');
                 td.data = [i,j]
-                if (this.grid[i][j] ===  1 && !this.gameStarted) { // only show where ships are placed if 
-                    td.classList.add('occupied');                  // game has not started
+                if (this.grid[i][j] ===  1 && !this.gameStarted) { // only show where ships are placed if game has not started
+                    td.classList.add('occupied');                
                 } else if (this.grid[i][j] ===  'o') {
                     td.classList.add('missed');
                 } else if (this.grid[i][j] ===  'x') {
@@ -48,14 +47,13 @@ class Board {
     updateBoard(name) {
         let table = document.getElementById(`${name}`);
         // remove all the chldren (rows) and update board
-        // removing all children is O(n)
         while (table.firstChild) {
             table.removeChild(table.firstChild);
         }
         this.display(name);
     }
 
-    // time complexity to generate board is O(n^2)
+    // time complexity to generate a 10x10 board is O(n^2)
     generateBoard(n) {
         let row = [];
         let grid = [];
@@ -70,7 +68,7 @@ class Board {
     }
 
     validPosition(coordinates, ship, axis) {
-        this.clearErrors(); // clear errors
+        this.clearErrors();
         let i = 0;
         if (axis === 'Horizontal') { // check for overlapping ship
             while (i < ship.length) {
@@ -100,7 +98,7 @@ class Board {
     placeShip(startPos, ship, axis) {
         this.grid[startPos[0]][startPos[1]] = 1; // add location data to grid
         let i = 0;
-        if (axis === 'Horizontal') { 
+        if (axis === 'Horizontal') { // horizontal ship placement
             while (ship.coordinates.length < ship.length) {
                 ship.coordinates.push([startPos[0],startPos[1]+i]) // add location data to ship
                 this.grid[startPos[0]][startPos[1]+i] = 1;         // update grid

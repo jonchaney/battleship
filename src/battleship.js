@@ -24,12 +24,12 @@ class Battleship {
         const nextPlayer = () => {
             let gameOver = this.players[0].lost() || this.players[1].lost()
             if(gameOver) {
+                Util.remove('attack'); // move this to different area of code.
                 if (this.players[0].lost()) {
                     this.displayWinner(this.players[0])
                 } else {
                     this.displayWinner(this.players[1])
                 }
-                Util.remove('attack');
             } else {
                 move(this.players, () => nextPlayer());    
             }
