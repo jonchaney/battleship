@@ -38,7 +38,7 @@ const clearInnerHtml = (id) => {
         element = document.createElement('p')
         element.innerHTML = "";
     } else {
-        element.getElementById(id).innerHTML = "";
+        element.innerHTML = "";
     }
 }
 
