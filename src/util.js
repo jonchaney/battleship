@@ -12,5 +12,19 @@ const toggleElement = (id) => {
     }
 }
 
+const compareArray = (arrayA, arrayB) => {
+    if (arrayA.join() === arrayB.join()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+const changeInnerHtml = (id, str) => {
+    document.getElementById(`${id}`).innerHTML = `${str}`;
+}
+
 exports.remove = remove;
 exports.toggleElement = toggleElement;
+exports.compareArray = compareArray;
+exports.changeInnerHtml = changeInnerHtml;

@@ -17,9 +17,13 @@
             }
             .occupied {
                 background-color: lightgray;
-                height: 1vh;
+                // height: 1vh;
             }
-            .occupied  > td {
+            .hit {
+                background-color: #ff5722a3;;
+            }
+            .missed {
+                background-color: #ffffff57;
             }
         }
     }

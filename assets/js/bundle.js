@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,7 +70,45 @@
 "use strict";
 
 
-var Battleship = __webpack_require__(1);
+var remove = function remove(id) {
+    var element = document.getElementById("" + id);
+    element.parentNode.removeChild(element);
+};
+
+var toggleElement = function toggleElement(id) {
+    var element = document.getElementById("" + id);
+    if (element.style.display === "none") {
+        element.style.display = "";
+    } else {
+        element.style.display = 'none';
+    }
+};
+
+var compareArray = function compareArray(arrayA, arrayB) {
+    if (arrayA.join() === arrayB.join()) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+var changeInnerHtml = function changeInnerHtml(id, str) {
+    document.getElementById("" + id).innerHTML = "" + str;
+};
+
+exports.remove = remove;
+exports.toggleElement = toggleElement;
+exports.compareArray = compareArray;
+exports.changeInnerHtml = changeInnerHtml;
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var Battleship = __webpack_require__(2);
 
 document.addEventListener('DOMContentLoaded', function () {
     window.game = new Battleship();
@@ -78,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -88,8 +126,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Player = __webpack_require__(2);
-var Util = __webpack_require__(5);
+var Player = __webpack_require__(3);
+var Util = __webpack_require__(0);
 
 var Battleship = function () {
     function Battleship() {
@@ -109,7 +147,37 @@ var Battleship = function () {
     }, {
         key: 'battle',
         value: function battle() {
-            this.players[0].makeMove(this.players[1]);
+            var _this = this;
+
+            var i = 0;
+            var j = 1;
+            var move = function move(players, nextPlayer) {
+                var player = players[i % 2];
+                var opposingPlayer = players[j % 2];
+                player.makeMove(opposingPlayer, nextPlayer);
+                i++;
+                j++;
+            };
+
+            var nextPlayer = function nextPlayer() {
+                var gameOver = _this.players[0].lost() || _this.players[1].lost();
+                if (gameOver) {
+                    if (_this.players[0].lost()) {
+                        Util.changeInnerHtml('attack-info', 'Player Two is The Winner!!');
+                    } else {
+                        Util.changeInnerHtml('attack-info', 'Player Two is The Winner!!');
+                    }
+                    Util.remove('attack');
+                } else {
+                    move(_this.players, function () {
+                        return nextPlayer();
+                    });
+                }
+            };
+
+            move(this.players, function () {
+                return nextPlayer();
+            });
         }
     }, {
         key: 'displayBoard',
@@ -119,7 +187,7 @@ var Battleship = function () {
     }, {
         key: 'setUpBoards',
         value: function setUpBoards(players) {
-            var _this = this;
+            var _this2 = this;
 
             var i = 0;
             var setUpBoard = function setUpBoard(nextPlayer) {
@@ -133,9 +201,10 @@ var Battleship = function () {
             var nextPlayer = function nextPlayer() {
                 setUpBoard(function () {
                     Util.toggleElement('place-ships');
-                    _this.battle();
+                    _this2.battle();
                 });
             };
+
             setUpBoard(function () {
                 return nextPlayer();
             });
@@ -158,7 +227,7 @@ var Battleship = function () {
 module.exports = Battleship;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -168,8 +237,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Board = __webpack_require__(3);
-var Util = __webpack_require__(5);
+var Board = __webpack_require__(4);
+var Util = __webpack_require__(0);
 
 var Player = function () {
     function Player(name) {
@@ -177,7 +246,6 @@ var Player = function () {
 
         this.name = name;
         this.board = new Board();
-        this.shipsSunk = 0;
     }
 
     _createClass(Player, [{
@@ -191,18 +259,18 @@ var Player = function () {
             var loopShips = function loopShips(ships) {
                 ships[i].shipInfo(); // display ship information
                 document.getElementById('' + _this.name).addEventListener('click', function (event) {
-                    if (i !== 5) {
+                    if (i !== _this.board.ships.length) {
                         // only respond to onclick if all ships placed
                         placeSingleShip(event.target.data, ships[i], function () {
                             i++;
-                            if (i === 5) {
+                            if (i === _this.board.ships.length) {
                                 // if all ships are placed
                                 setTimeout(function () {
                                     // set time out for UI/UX purposes
                                     Util.remove(_this.name); // remove board from DOM
                                     _this.board.gameStarted = true;
                                     shipsPlaced(); // call back function
-                                }, 500);
+                                }, 1000);
                             } else {
                                 document.getElementById('ship').innerHTML = ships[i].type + ' (length ' + ships[i].length + ')';
                             }
@@ -232,44 +300,31 @@ var Player = function () {
             document.getElementById('attack').innerHTML = this.name + ' make your move, attack!'; // tell player to attack
             var move = function move(opposingPlayer) {
                 document.getElementById('' + opposingPlayer.name).addEventListener('click', function (event) {
-                    console.log(event.target.data);
-                    // check if hit, miss, already taken
+                    var board = opposingPlayer.board;
+                    var coordinate = event.target.data;
 
-                    // then check if sunk
-                    // then check if won
-                    // display information and invoke callback function
-                    // placeSingleShip(event.target.data, ships[i], () => {
-                    //     i++;
-                    //     if (i === 5) {                  // if all ships are placed
-                    //         setTimeout(() => {          // set time out for UI/UX purposes
-                    //             Util.remove(this.name); // remove board from DOM
-                    //             this.board.gameStarted = true;
-                    //             shipsPlaced();          // call back function
-                    //         }, 500);
-                    //     } else { 
-                    //         document.getElementById('ship').innerHTML = `${ships[i].type} (length ${ships[i].length})` 
-                    //     } 
-                    // });
+                    takeShot(coordinate, board, function () {
+                        callback();
+                    });
                 });
-                // const placeSingleShip = (coordinates, ship, nextShip) => {
-                // let axis = document.getElementById('axis').innerHTML;
-                // if (this.board.validPosition(coordinates, ship, axis)) {
-                //     this.board.placeShip(coordinates, ship, axis);
-                //     this.board.updateBoard(this.name);
-                // } else {
-                //     this.board.errors('invalid position');
-                // }
-                // if (ship.length === ship.coordinates.length) {
-                //     nextShip();
-                // } 
-                // }
+                var takeShot = function takeShot(coordinate, board, nextPlayer) {
+                    if (board.fire(coordinate)) {
+                        Util.remove('' + opposingPlayer.name);
+                        board.display(opposingPlayer.name);
+                        setTimeout(function () {
+                            board.attackInfo("");
+                            Util.remove('' + opposingPlayer.name);
+                            nextPlayer();
+                        }, 1000);
+                    }
+                };
             };
             move(opposingPlayer);
         }
     }, {
         key: 'lost',
         value: function lost() {
-            if (this.board.shipsSunk === 5) {
+            if (this.board.shipsSunk === this.board.ships.length - 1) {
                 return true;
             } else {
                 return false;
@@ -288,7 +343,7 @@ var Player = function () {
 module.exports = Player;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -296,9 +351,12 @@ module.exports = Player;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _util = __webpack_require__(0);
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Ship = __webpack_require__(4);
+var Ship = __webpack_require__(5);
+var Util = __webpack_require__(0);
 
 var Board = function () {
     function Board() {
@@ -308,8 +366,8 @@ var Board = function () {
 
         this.grid = this.generateBoard(n);
         this.ships = [new Ship('Battleship', 4), new Ship('Cruiser', 3), new Ship('Carrier', 5), new Ship('Submarine', 3), new Ship('Destroyer', 2)];
-        this.shipsSunk = 0;
         this.gameStarted = false;
+        this.shipsSunk = 0;
     }
 
     _createClass(Board, [{
@@ -335,6 +393,10 @@ var Board = function () {
                     if (_this.grid[i][j] === 1 && !_this.gameStarted) {
                         // only show where ships are placed if 
                         td.classList.add('occupied'); // game has not started
+                    } else if (_this.grid[i][j] === 'o') {
+                        td.classList.add('missed');
+                    } else if (_this.grid[i][j] === 'x') {
+                        td.classList.add('hit');
                     }
                     tr.appendChild(td);
                 });
@@ -347,6 +409,8 @@ var Board = function () {
         key: 'updateBoard',
         value: function updateBoard(name) {
             var table = document.getElementById('' + name);
+            // remove all the chldren (rows) and update board
+            // removing all children is O(n)
             while (table.firstChild) {
                 table.removeChild(table.firstChild);
             }
@@ -405,7 +469,6 @@ var Board = function () {
         key: 'placeShip',
         value: function placeShip(startPos, ship, axis) {
             this.grid[startPos[0]][startPos[1]] = 1; // add location data to grid
-
             var i = 0;
             if (axis === 'Horizontal') {
                 while (ship.coordinates.length < ship.length) {
@@ -423,14 +486,60 @@ var Board = function () {
             }
         }
     }, {
+        key: 'fire',
+        value: function fire(coordinate) {
+            var location = this.grid[coordinate[0]][coordinate[1]]; // get grid data
+            var position = { miss: 0, hit: 1 };
+            switch (location) {
+                case position.miss:
+                    this.grid[coordinate[0]][coordinate[1]] = 'o';
+                    this.attackInfo('you missed!');
+                    return true;
+                case position.hit:
+                    this.grid[coordinate[0]][coordinate[1]] = 'x';
+                    this.attackInfo('nice shot!');
+                    this.checkShips(coordinate);
+                    return true;
+                default:
+                    this.attackInfo('you already fired there!');
+                    return false;
+            }
+        }
+    }, {
+        key: 'checkShips',
+        value: function checkShips(coordinate) {
+            var _this2 = this;
+
+            // checking the coordinates of each ship to see which ship was hit and if it was sunk
+            // time complexity O(nk)
+            // n = number of ships 
+            // k = length of longest ship
+            this.ships.forEach(function (ship) {
+                ship.coordinates.forEach(function (location) {
+                    if (Util.compareArray(coordinate, location)) {
+                        ship.count++;
+                        if (ship.isSunk()) {
+                            _this2.attackInfo('They sunk your ' + ship.type + '!');
+                            _this2.shipsSunk += 1;
+                        }
+                    }
+                });
+            });
+        }
+    }, {
+        key: 'attackInfo',
+        value: function attackInfo(msg) {
+            Util.changeInnerHtml('attack-info', msg);
+        }
+    }, {
         key: 'errors',
         value: function errors(error) {
-            document.getElementById('errors').innerHTML = '' + error;
+            Util.changeInnerHtml('errors', error);
         }
     }, {
         key: 'clearErrors',
         value: function clearErrors() {
-            document.getElementById('errors').innerHTML = '';
+            Util.changeInnerHtml('errors', "");
         }
     }]);
 
@@ -440,7 +549,7 @@ var Board = function () {
 module.exports = Board;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -455,7 +564,7 @@ var Ship = function () {
         _classCallCheck(this, Ship);
 
         this.length = length;
-        this.count = length;
+        this.count = 0;
         this.type = type;
         this.coordinates = [];
     }
@@ -463,7 +572,7 @@ var Ship = function () {
     _createClass(Ship, [{
         key: 'isSunk',
         value: function isSunk() {
-            if (this.count === 0) {
+            if (this.count === this.length) {
                 return true;
             }
         }
@@ -478,30 +587,6 @@ var Ship = function () {
 }();
 
 module.exports = Ship;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var remove = function remove(id) {
-    var element = document.getElementById("" + id);
-    element.parentNode.removeChild(element);
-};
-
-var toggleElement = function toggleElement(id) {
-    var element = document.getElementById("" + id);
-    if (element.style.display === "none") {
-        element.style.display = "";
-    } else {
-        element.style.display = 'none';
-    }
-};
-
-exports.remove = remove;
-exports.toggleElement = toggleElement;
 
 /***/ })
 /******/ ]);

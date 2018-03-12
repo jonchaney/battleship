@@ -14,7 +14,31 @@ class Battleship {
     }
 
     battle() {
-        this.players[0].makeMove(this.players[1]);
+        let i = 0;
+        let j = 1;
+        const move = (players, nextPlayer) => { 
+            let player = players[i%2];
+            let opposingPlayer = players[j%2];
+            player.makeMove(opposingPlayer, nextPlayer); 
+            i++;
+            j++;
+        }
+        
+        const nextPlayer = () => {
+            let gameOver = this.players[0].lost() || this.players[1].lost()
+            if(gameOver) {
+                if (this.players[0].lost()) {
+                    Util.changeInnerHtml('attack-info', 'Player Two is The Winner!!')
+                } else {
+                    Util.changeInnerHtml('attack-info', 'Player Two is The Winner!!')
+                }
+                Util.remove('attack');
+            } else {
+                move(this.players, () => nextPlayer());    
+            }
+        }
+
+        move(this.players, () => nextPlayer());
     }
 
     displayBoard(player) {
@@ -35,6 +59,7 @@ class Battleship {
                 this.battle();
             });    
         }
+
         setUpBoard(() => nextPlayer());
     }
 

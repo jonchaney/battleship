@@ -84,8 +84,11 @@ button:focus {
         height: 1vh;
         width: 1vh; }
       #tables table tr .occupied {
-        background-color: lightgray;
-        height: 1vh; }
+        background-color: lightgray; }
+      #tables table tr .hit {
+        background-color: #ff5722a3; }
+      #tables table tr .missed {
+        background-color: #ffffff57; }
 
 #place-ships {
   font-family: Lato;
@@ -99,6 +102,19 @@ button:focus {
       font-family: Lato;
       margin-top: 1vh;
       font-size: 1.6vh; }
+
+#make-move {
+  font-family: Lato;
+  display: flex;
+  padding-top: 2vh;
+  justify-content: center; }
+  #make-move section {
+    display: flex;
+    flex-direction: column;
+    text-align: center; }
+    #make-move section p {
+      display: flex;
+      flex-direction: column; }
 
 #errors {
   padding-top: 1vh;

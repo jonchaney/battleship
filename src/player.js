@@ -5,7 +5,6 @@ class Player {
     constructor(name) {
         this.name = name;
         this.board = new Board();
-        this.shipsSunk = 0;
     }
 
     placeShips(shipsPlaced) {
@@ -15,15 +14,15 @@ class Player {
         let loopShips = (ships) => { 
             ships[i].shipInfo(); // display ship information
             document.getElementById(`${this.name}`).addEventListener('click', (event) => { 
-                if (i !== 5) { // only respond to onclick if all ships placed
+                if (i !== this.board.ships.length) { // only respond to onclick if all ships placed
                     placeSingleShip(event.target.data, ships[i], () => {
                         i++;
-                        if (i === 5) {                  // if all ships are placed
+                        if (i === this.board.ships.length) {                  // if all ships are placed
                             setTimeout(() => {          // set time out for UI/UX purposes
                                 Util.remove(this.name); // remove board from DOM
                                 this.board.gameStarted = true;
                                 shipsPlaced();          // call back function
-                            }, 500);
+                            }, 1000);
                         } else { 
                             document.getElementById('ship').innerHTML = `${ships[i].type} (length ${ships[i].length})` 
                         } 
@@ -52,43 +51,30 @@ class Player {
         document.getElementById('attack').innerHTML = `${this.name} make your move, attack!` // tell player to attack
         const move = (opposingPlayer) => { 
             document.getElementById(`${opposingPlayer.name}`).addEventListener('click', (event) => { 
-                console.log(event.target.data)
-                // check if hit, miss, already taken
-                
-                // then check if sunk
-                // then check if won
-                // display information and invoke callback function
-                // placeSingleShip(event.target.data, ships[i], () => {
-                //     i++;
-                //     if (i === 5) {                  // if all ships are placed
-                //         setTimeout(() => {          // set time out for UI/UX purposes
-                //             Util.remove(this.name); // remove board from DOM
-                //             this.board.gameStarted = true;
-                //             shipsPlaced();          // call back function
-                //         }, 500);
-                //     } else { 
-                //         document.getElementById('ship').innerHTML = `${ships[i].type} (length ${ships[i].length})` 
-                //     } 
-                // });
+                let board = opposingPlayer.board;
+                let coordinate = event.target.data;
+
+                takeShot(coordinate, board, () => {
+                    callback();
+                });
             });
-            // const placeSingleShip = (coordinates, ship, nextShip) => {
-                // let axis = document.getElementById('axis').innerHTML;
-                // if (this.board.validPosition(coordinates, ship, axis)) {
-                //     this.board.placeShip(coordinates, ship, axis);
-                //     this.board.updateBoard(this.name);
-                // } else {
-                //     this.board.errors('invalid position');
-                // }
-                // if (ship.length === ship.coordinates.length) {
-                //     nextShip();
-                // } 
-            // }
+            const takeShot = (coordinate, board, nextPlayer) => {
+                if (board.fire(coordinate)) {
+                    Util.remove(`${opposingPlayer.name}`);
+                    board.display(opposingPlayer.name);
+                    setTimeout(() => {     
+                        board.attackInfo("");
+                        Util.remove(`${opposingPlayer.name}`);
+                        nextPlayer();
+                    }, 1000);
+                }
+            }
         }
         move(opposingPlayer);      
     }
 
     lost() {
-        if(this.board.shipsSunk === 5) {
+        if(this.board.shipsSunk === this.board.ships.length-1) {
             return true;
         } else {
             return false;

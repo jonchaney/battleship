@@ -1,13 +1,13 @@
 class Ship {
     constructor(type, length) {
         this.length = length;
-        this.count = length;
+        this.count = 0;
         this.type = type;
         this.coordinates = [];
     }
 
     isSunk() {
-        if (this.count === 0) { return true; }
+        if (this.count === this.length) { return true; }
     }
 
     shipInfo(){

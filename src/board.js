@@ -1,4 +1,7 @@
+import { compareArray } from './util.js';
+
 const Ship = require('./ship.js');
+const Util = require('./util.js');
 
 class Board {
     constructor(n = 10) {
@@ -8,8 +11,8 @@ class Board {
                       new Ship('Carrier', 5),
                       new Ship('Submarine', 3),
                       new Ship('Destroyer', 2)];
-        this.shipsSunk = 0;
         this.gameStarted = false;
+        this.shipsSunk = 0;
     }
 
     display(name) {
@@ -17,7 +20,7 @@ class Board {
         let table = document.getElementById(`${name}`) 
         if (!table) { // if it does not exist create a new one
             table = document.createElement('table');;
-        } 
+        }
         let tr; // row
         let td; // column
 
@@ -29,6 +32,10 @@ class Board {
                 td.data = [i,j]
                 if (this.grid[i][j] ===  1 && !this.gameStarted) { // only show where ships are placed if 
                     td.classList.add('occupied');                  // game has not started
+                } else if (this.grid[i][j] ===  'o') {
+                    td.classList.add('missed');
+                } else if (this.grid[i][j] ===  'x') {
+                    td.classList.add('hit');
                 }
                 tr.appendChild(td)
             })
@@ -40,6 +47,8 @@ class Board {
 
     updateBoard(name) {
         let table = document.getElementById(`${name}`);
+        // remove all the chldren (rows) and update board
+        // removing all children is O(n)
         while (table.firstChild) {
             table.removeChild(table.firstChild);
         }
@@ -90,7 +99,6 @@ class Board {
 
     placeShip(startPos, ship, axis) {
         this.grid[startPos[0]][startPos[1]] = 1; // add location data to grid
-
         let i = 0;
         if (axis === 'Horizontal') { 
             while (ship.coordinates.length < ship.length) {
@@ -107,12 +115,53 @@ class Board {
         }
     }
 
+    fire(coordinate) {
+        let location = this.grid[coordinate[0]][coordinate[1]]; // get grid data
+        const position = {miss: 0, hit: 1};
+        switch (location) {
+            case position.miss:
+                this.grid[coordinate[0]][coordinate[1]] = 'o';
+                this.attackInfo('you missed!');
+                return true;
+            case position.hit:
+                this.grid[coordinate[0]][coordinate[1]] = 'x';
+                this.attackInfo('nice shot!')
+                this.checkShips(coordinate);     
+                return true;
+            default:
+                this.attackInfo('you already fired there!')
+                return false;
+        }
+    }
+
+    checkShips(coordinate) {
+        // checking the coordinates of each ship to see which ship was hit and if it was sunk
+        // time complexity O(nk)
+        // n = number of ships 
+        // k = length of longest ship
+        this.ships.forEach((ship) => {
+            ship.coordinates.forEach((location) => {
+                if (Util.compareArray(coordinate, location)) {
+                    ship.count++
+                    if (ship.isSunk()) {
+                        this.attackInfo(`They sunk your ${ship.type}!`)
+                        this.shipsSunk += 1;
+                    } 
+                }
+            })
+        })
+    }
+
+    attackInfo(msg) {
+        Util.changeInnerHtml('attack-info', msg)
+    }
+
     errors(error) {
-        document.getElementById('errors').innerHTML = `${error}`;
+        Util.changeInnerHtml('errors', error);
     }
 
     clearErrors() {
-        document.getElementById('errors').innerHTML = '';
+        Util.changeInnerHtml('errors', "");
     }
 }
 
