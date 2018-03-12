@@ -9,6 +9,10 @@ let playerTwo = game.players[1]
 let ship = new Ship("Carrier", 4)
 game.playGame();
 
+test('player name is set correctly', () => {
+    expect(playerOne.name).toBe('Player One');
+});
+
 test('board grid is ten x ten', () => {
     expect(playerOne.board.grid.length).toBe(10);
     expect(playerOne.board.grid[0].length).toBe(10);
@@ -31,13 +35,14 @@ test('places ship in correct location', () => {
 });
 
 test('board is updated when ship is hit', () => {
-    // player two get fried upon
+    // player one get fried upon
     playerOne.board.fire([0,0])
     expect(playerOne.board.grid[0][0] === 'x').toBe(true)
 });
 
 test('board is updated when shot is a miss', () => {
-    // player two get fried upon
+    // player one get fried upon
     playerOne.board.fire([0,5])
     expect(playerOne.board.grid[0][5] === 'o').toBe(true)
 });
+
