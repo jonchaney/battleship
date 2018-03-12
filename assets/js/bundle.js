@@ -430,11 +430,7 @@ var Board = function () {
         _classCallCheck(this, Board);
 
         this.generateBoard(n);
-        this.ships = [new Ship('Battleship', 1)];
-        //   new Ship('Cruiser', 3),
-        //   new Ship('Carrier', 5),
-        //   new Ship('Submarine', 3),
-        //   new Ship('Destroyer', 2)];
+        this.ships = [new Ship('Battleship', 4), new Ship('Cruiser', 3), new Ship('Carrier', 5), new Ship('Submarine', 3), new Ship('Destroyer', 2)];
         this.gameStarted = false;
         this.shipsSunk = 0;
     }
