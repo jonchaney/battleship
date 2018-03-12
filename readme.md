@@ -12,3 +12,4 @@
 
 - npm install
 - npm start (will run webpack, sass, and open static html file)
+- npm test will run Jest tests
