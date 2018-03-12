@@ -6,11 +6,11 @@ const Util = require('./util.js');
 class Board {
     constructor(n = 10) {
         this.grid = this.generateBoard(n);
-        this.ships = [new Ship('Battleship', 1)];
-                    //   new Ship('Cruiser', 3),
-                    //   new Ship('Carrier', 5),
-                    //   new Ship('Submarine', 3),
-                    //   new Ship('Destroyer', 2)];
+        this.ships = [new Ship('Battleship', 4),
+                      new Ship('Cruiser', 3),
+                      new Ship('Carrier', 5),
+                      new Ship('Submarine', 3),
+                      new Ship('Destroyer', 2)];
         this.gameStarted = false;
         this.shipsSunk = 0;
     }
@@ -116,6 +116,7 @@ class Board {
     }
 
     fire(coordinate) {
+        this.clearErrors();
         let location = this.grid[coordinate[0]][coordinate[1]]; // get grid data
         const position = {miss: 0, hit: 1};
         switch (location) {
@@ -129,7 +130,7 @@ class Board {
                 this.checkShips(coordinate);     
                 return true;
             default:
-                this.attackInfo('you already fired there!')
+                this.errors('you already fired there!')
                 return false;
         }
     }

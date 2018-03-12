@@ -74,7 +74,7 @@ class Player {
     }
 
     lost() {
-        if(this.board.shipsSunk === this.board.ships.length-1) {
+        if(this.board.shipsSunk === this.board.ships.length) {
             return true;
         } else {
             return false;

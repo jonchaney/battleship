@@ -3,13 +3,11 @@ const Util = require('./util.js')
 
 class Battleship {
     constructor() {
-        this.players = [];
+        this.players = [new Player('Player One'), new Player('Player Two')];
     }
     
     playGame() {
-        this.players.push(new Player('Player One'));
-        this.players.push(new Player('Player Two'));
-        this.setUpBoards(this.players);
+        this.setUpBoards(this.players, () => this.battle());
     }
 
     battle() {
@@ -44,7 +42,7 @@ class Battleship {
         player.displayBoard(player.name);
     }
 
-    setUpBoards(players) {
+    setUpBoards(players, startBattle) {
         let i = 0;
         const setUpBoard = (nextPlayer) => { 
             players[i].displayBoard();
@@ -55,7 +53,7 @@ class Battleship {
         const nextPlayer = () => {
             setUpBoard(() => {
                 Util.toggleElement('place-ships')
-                this.battle();
+                startBattle()
             });    
         }
 

@@ -133,20 +133,22 @@ var Battleship = function () {
     function Battleship() {
         _classCallCheck(this, Battleship);
 
-        this.players = [];
+        this.players = [new Player('Player One'), new Player('Player Two')];
     }
 
     _createClass(Battleship, [{
         key: 'playGame',
         value: function playGame() {
-            this.players.push(new Player('Player One'));
-            this.players.push(new Player('Player Two'));
-            this.setUpBoards(this.players);
+            var _this = this;
+
+            this.setUpBoards(this.players, function () {
+                return _this.battle();
+            });
         }
     }, {
         key: 'battle',
         value: function battle() {
-            var _this = this;
+            var _this2 = this;
 
             var i = 0;
             var j = 1;
@@ -159,16 +161,16 @@ var Battleship = function () {
             };
 
             var nextPlayer = function nextPlayer() {
-                var gameOver = _this.players[0].lost() || _this.players[1].lost();
+                var gameOver = _this2.players[0].lost() || _this2.players[1].lost();
                 if (gameOver) {
-                    if (_this.players[0].lost()) {
-                        _this.displayWinner(_this.players[0]);
+                    if (_this2.players[0].lost()) {
+                        _this2.displayWinner(_this2.players[0]);
                     } else {
-                        _this.displayWinner(_this.players[1]);
+                        _this2.displayWinner(_this2.players[1]);
                     }
                     Util.remove('attack');
                 } else {
-                    move(_this.players, function () {
+                    move(_this2.players, function () {
                         return nextPlayer();
                     });
                 }
@@ -185,9 +187,7 @@ var Battleship = function () {
         }
     }, {
         key: 'setUpBoards',
-        value: function setUpBoards(players) {
-            var _this2 = this;
-
+        value: function setUpBoards(players, startBattle) {
             var i = 0;
             var setUpBoard = function setUpBoard(nextPlayer) {
                 players[i].displayBoard();
@@ -200,7 +200,7 @@ var Battleship = function () {
             var nextPlayer = function nextPlayer() {
                 setUpBoard(function () {
                     Util.toggleElement('place-ships');
-                    _this2.battle();
+                    startBattle();
                 });
             };
 
@@ -328,7 +328,7 @@ var Player = function () {
     }, {
         key: 'lost',
         value: function lost() {
-            if (this.board.shipsSunk === this.board.ships.length - 1) {
+            if (this.board.shipsSunk === this.board.ships.length) {
                 return true;
             } else {
                 return false;
@@ -369,11 +369,7 @@ var Board = function () {
         _classCallCheck(this, Board);
 
         this.grid = this.generateBoard(n);
-        this.ships = [new Ship('Battleship', 1)];
-        //   new Ship('Cruiser', 3),
-        //   new Ship('Carrier', 5),
-        //   new Ship('Submarine', 3),
-        //   new Ship('Destroyer', 2)];
+        this.ships = [new Ship('Battleship', 4), new Ship('Cruiser', 3), new Ship('Carrier', 5), new Ship('Submarine', 3), new Ship('Destroyer', 2)];
         this.gameStarted = false;
         this.shipsSunk = 0;
     }
@@ -496,6 +492,7 @@ var Board = function () {
     }, {
         key: 'fire',
         value: function fire(coordinate) {
+            this.clearErrors();
             var location = this.grid[coordinate[0]][coordinate[1]]; // get grid data
             var position = { miss: 0, hit: 1 };
             switch (location) {
@@ -509,7 +506,7 @@ var Board = function () {
                     this.checkShips(coordinate);
                     return true;
                 default:
-                    this.attackInfo('you already fired there!');
+                    this.errors('you already fired there!');
                     return false;
             }
         }
