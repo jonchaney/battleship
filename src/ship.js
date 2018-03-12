@@ -11,7 +11,11 @@ class Ship {
     }
 
     shipInfo(){
-        document.getElementById('ship').innerHTML = `${this.type} (length ${this.length})`
+        let ship = document.getElementById('ship');
+        if (!ship) { // if it does not exist create a new one for jest testing
+            ship = document.createElement('p');;
+        }
+        ship.innerHTML = `${this.type} (length ${this.length})`
     }
 }
 

@@ -10,10 +10,23 @@ class Player {
     placeShips(shipsPlaced) {
         let i = 0;
         let ships = this.board.ships;
-        document.getElementById('message').innerHTML = `${this.name} place your&nbsp;` // tell player which ship to place
+        let message = document.getElementById('message')
+
+        if (!message) { // if it does not exist create a new one for jest testing
+            message = document.createElement('p');;
+        } else {
+            message.innerHTML = `${this.name} place your&nbsp;` // tell player which ship to place
+        }
+
         let loopShips = (ships) => { 
             ships[i].shipInfo(); // display ship information
-            document.getElementById(`${this.name}`).addEventListener('click', (event) => { 
+
+            let table = document.getElementById(`${this.name}`)
+            if (!table) { // if it does not exist create a new one for jest testing
+                table = document.createElement('table');
+            } 
+            
+            table.addEventListener('click', (event) => { 
                 if (i !== this.board.ships.length) { // only respond to onclick if all ships placed
                     placeSingleShip(event.target.data, ships[i], () => {
                         i++;

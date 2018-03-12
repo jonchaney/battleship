@@ -23,11 +23,23 @@ const compareArray = (arrayA, arrayB) => {
 }
 
 const changeInnerHtml = (id, str) => {
-    document.getElementById(`${id}`).innerHTML = `${str}`;
+    let element = document.getElementById(id);
+    if (!element) {
+        element = document.createElement('p')
+        element.innerHTML = `${str}`;
+    } else {
+        element.getElementById(`${id}`).innerHTML = `${str}`;
+    }
 }
 
 const clearInnerHtml = (id) => {
-    document.getElementById(id).innerHTML = "";
+    let element = document.getElementById(id);
+    if (!element) {
+        element = document.createElement('p')
+        element.innerHTML = "";
+    } else {
+        element.getElementById(id).innerHTML = "";
+    }
 }
 
 exports.remove = remove;

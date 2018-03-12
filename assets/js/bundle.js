@@ -95,11 +95,23 @@ var compareArray = function compareArray(arrayA, arrayB) {
 };
 
 var changeInnerHtml = function changeInnerHtml(id, str) {
-    document.getElementById("" + id).innerHTML = "" + str;
+    var element = document.getElementById(id);
+    if (!element) {
+        element = document.createElement('p');
+        element.innerHTML = "" + str;
+    } else {
+        element.getElementById("" + id).innerHTML = "" + str;
+    }
 };
 
 var clearInnerHtml = function clearInnerHtml(id) {
-    document.getElementById(id).innerHTML = "";
+    var element = document.getElementById(id);
+    if (!element) {
+        element = document.createElement('p');
+        element.innerHTML = "";
+    } else {
+        element.getElementById(id).innerHTML = "";
+    }
 };
 
 exports.remove = remove;
@@ -287,10 +299,25 @@ var Player = function () {
 
             var i = 0;
             var ships = this.board.ships;
-            document.getElementById('message').innerHTML = this.name + ' place your&nbsp;'; // tell player which ship to place
+            var message = document.getElementById('message');
+
+            if (!message) {
+                // if it does not exist create a new one for jest testing
+                message = document.createElement('p');;
+            } else {
+                message.innerHTML = this.name + ' place your&nbsp;'; // tell player which ship to place
+            }
+
             var loopShips = function loopShips(ships) {
                 ships[i].shipInfo(); // display ship information
-                document.getElementById('' + _this.name).addEventListener('click', function (event) {
+
+                var table = document.getElementById('' + _this.name);
+                if (!table) {
+                    // if it does not exist create a new one for jest testing
+                    table = document.createElement('table');
+                }
+
+                table.addEventListener('click', function (event) {
                     if (i !== _this.board.ships.length) {
                         // only respond to onclick if all ships placed
                         placeSingleShip(event.target.data, ships[i], function () {
@@ -416,6 +443,10 @@ var Board = function () {
                 // if it does not exist create a new one
                 table = document.createElement('table');;
             }
+            if (!tables) {
+                // if it does not exist create a new one
+                tables = document.createElement('tables');;
+            } // create element if not there for jest testing
             var tr = void 0; // row
             var td = void 0; // column
 
@@ -629,7 +660,12 @@ var Ship = function () {
     }, {
         key: 'shipInfo',
         value: function shipInfo() {
-            document.getElementById('ship').innerHTML = this.type + ' (length ' + this.length + ')';
+            var ship = document.getElementById('ship');
+            if (!ship) {
+                // if it does not exist create a new one for jest testing
+                ship = document.createElement('p');;
+            }
+            ship.innerHTML = this.type + ' (length ' + this.length + ')';
         }
     }]);
 

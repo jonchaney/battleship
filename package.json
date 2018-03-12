@@ -4,7 +4,7 @@
   "description": "battleship coding challenge",
   "main": "entry.js",
   "scripts": {
-    "test": "jasmine",
+    "test": "jest",
     "start": "sass --watch ./assets/scss/entry.scss:./assets/css/bundle.css & webpack --watch"
   },
   "repository": {
@@ -22,13 +22,14 @@
     "babel-loader": "^7.1.1",
     "babel-preset-es2015": "^6.24.1",
     "jasmine-node": "^1.14.5",
-    "jsdom": "^11.6.2",
     "webpack": "^3.4.1"
   },
   "devDependencies": {
+    "babel-jest": "^22.4.1",
+    "jest": "^22.4.2",
     "node-sass": "^4.5.3",
+    "regenerator-runtime": "^0.11.1",
     "sass-loader": "^6.0.6",
-    "jasmine": "^3.1.0",
     "webpack": "^2.1.0-beta.27"
   }
 }

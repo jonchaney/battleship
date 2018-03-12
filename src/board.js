@@ -19,6 +19,9 @@ class Board {
         if (!table) { // if it does not exist create a new one
             table = document.createElement('table');;
         }
+        if (!tables) { // if it does not exist create a new one
+            tables = document.createElement('tables');;
+        } // create element if not there for jest testing
         let tr; // row
         let td; // column
 
