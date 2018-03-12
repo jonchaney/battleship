@@ -6,7 +6,7 @@ const Ship = require('../src/ship.js')
 let game = new Battleship();
 let playerOne = game.players[0]
 let playerTwo = game.players[1]
-let ship = new Ship("Carrier", 4)
+let ship = playerOne.board.ships[0]
 game.playGame();
 
 test('player name is set correctly', () => {
@@ -35,14 +35,22 @@ test('places ship in correct location', () => {
 });
 
 test('board is updated when ship is hit', () => {
-    // player one get fried upon
+    // player one is fried upon
     playerOne.board.fire([0,0])
     expect(playerOne.board.grid[0][0] === 'x').toBe(true)
 });
 
 test('board is updated when shot is a miss', () => {
-    // player one get fried upon
+    // player one is fried upon
     playerOne.board.fire([0,5])
     expect(playerOne.board.grid[0][5] === 'o').toBe(true)
+});
+
+test('ship is sunk', () => {
+    // player one ship is sunk
+    playerOne.board.fire([1,0])
+    playerOne.board.fire([2,0])
+    playerOne.board.fire([3,0])
+    expect(playerOne.board.shipsSunk === 1).toBe(true)
 });
 
