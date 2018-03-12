@@ -13,31 +13,23 @@
     <main id='main'>
         <h1>Battleship</h1>
         <p id="errors"></p>
-        <div class="form">
-            <form onsubmit="game.playGame(event)">
-                <input type="text" placeholder="enter player one's name">
-                <input type="text" placeholder="enter player two's name">
-                <div>
-                    <input type="submit" value="submit">
-                </div>
-            </form> 
-            </div>
-            <div id="tables"></div>
-            <div id="place-ships">
-                <section>
-                    <p id="message"></p>
-                    <p id="ship"></p>
-                </section>
-                <section>
-                    <button id="axis" onclick="game.toggleAxis()" type="button">Horizontal</button>
-                </section>
-            </div>
-            <div id="make-move">
-                <section>    
-                    <p id='attack'></p>
-                    <p id='attack-info'></p>
-                </section>
-            </div>
+        <p id="winner"></p>
+        <div id="tables"></div>
+        <div id="place-ships">
+            <section>
+                <p id="message"></p>
+                <p id="ship"></p>
+            </section>
+            <section>
+                <button id="axis" onclick="game.toggleAxis()" type="button">Horizontal</button>
+            </section>
+        </div>
+        <div id="make-move">
+            <section>    
+                <p id='attack'></p>
+                <p id='attack-info'></p>
+            </section>
+        </div>
     </main>
 </body>
 </html>

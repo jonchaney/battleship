@@ -139,7 +139,6 @@ var Battleship = function () {
     _createClass(Battleship, [{
         key: 'playGame',
         value: function playGame() {
-            document.getElementsByClassName('form')[0].style = 'display:none'; // remove form 
             this.players.push(new Player('Player One'));
             this.players.push(new Player('Player Two'));
             this.setUpBoards(this.players);
@@ -163,9 +162,9 @@ var Battleship = function () {
                 var gameOver = _this.players[0].lost() || _this.players[1].lost();
                 if (gameOver) {
                     if (_this.players[0].lost()) {
-                        Util.changeInnerHtml('attack-info', 'Player Two is The Winner!!');
+                        _this.displayWinner(_this.players[0]);
                     } else {
-                        Util.changeInnerHtml('attack-info', 'Player Two is The Winner!!');
+                        _this.displayWinner(_this.players[1]);
                     }
                     Util.remove('attack');
                 } else {
@@ -218,6 +217,11 @@ var Battleship = function () {
             } else {
                 axis.innerHTML = 'Horizontal';
             }
+        }
+    }, {
+        key: 'displayWinner',
+        value: function displayWinner(player) {
+            Util.changeInnerHtml('winner', player.name + ' is the winner!');
         }
     }]);
 
@@ -365,7 +369,11 @@ var Board = function () {
         _classCallCheck(this, Board);
 
         this.grid = this.generateBoard(n);
-        this.ships = [new Ship('Battleship', 4), new Ship('Cruiser', 3), new Ship('Carrier', 5), new Ship('Submarine', 3), new Ship('Destroyer', 2)];
+        this.ships = [new Ship('Battleship', 1)];
+        //   new Ship('Cruiser', 3),
+        //   new Ship('Carrier', 5),
+        //   new Ship('Submarine', 3),
+        //   new Ship('Destroyer', 2)];
         this.gameStarted = false;
         this.shipsSunk = 0;
     }
@@ -519,7 +527,7 @@ var Board = function () {
                     if (Util.compareArray(coordinate, location)) {
                         ship.count++;
                         if (ship.isSunk()) {
-                            _this2.attackInfo('They sunk your ' + ship.type + '!');
+                            _this2.attackInfo('You sunk their ' + ship.type + '!');
                             _this2.shipsSunk += 1;
                         }
                     }

@@ -7,7 +7,6 @@ class Battleship {
     }
     
     playGame() {
-        document.getElementsByClassName('form')[0].style = 'display:none'; // remove form 
         this.players.push(new Player('Player One'));
         this.players.push(new Player('Player Two'));
         this.setUpBoards(this.players);
@@ -28,9 +27,9 @@ class Battleship {
             let gameOver = this.players[0].lost() || this.players[1].lost()
             if(gameOver) {
                 if (this.players[0].lost()) {
-                    Util.changeInnerHtml('attack-info', 'Player Two is The Winner!!')
+                    this.displayWinner(this.players[0])
                 } else {
-                    Util.changeInnerHtml('attack-info', 'Player Two is The Winner!!')
+                    this.displayWinner(this.players[1])
                 }
                 Util.remove('attack');
             } else {
@@ -70,6 +69,10 @@ class Battleship {
         } else {
             axis.innerHTML = 'Horizontal';
         }
+    }
+
+    displayWinner(player) {
+        Util.changeInnerHtml('winner',`${player.name} is the winner!`);
     }
 }
 

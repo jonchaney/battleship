@@ -103,16 +103,16 @@ button:focus {
       margin-top: 1vh;
       font-size: 1.6vh; }
 
-#make-move {
+#make-move, #winner {
   font-family: Lato;
   display: flex;
   padding-top: 2vh;
   justify-content: center; }
-  #make-move section {
+  #make-move section, #winner section {
     display: flex;
     flex-direction: column;
     text-align: center; }
-    #make-move section p {
+    #make-move section p, #winner section p {
       display: flex;
       flex-direction: column; }
 
