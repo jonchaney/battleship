@@ -7,6 +7,8 @@ let game = new Battleship();
 let playerOne = game.players[0]
 let playerTwo = game.players[1]
 let ship = playerOne.board.ships[0]
+
+// start game
 game.playGame();
 
 test('player name is set correctly', () => {

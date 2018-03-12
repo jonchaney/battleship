@@ -173,6 +173,7 @@ var Battleship = function () {
             var j = 1;
             Util.toggleElement('attack');
             var move = function move(players, nextPlayer) {
+                // switch between players
                 var player = players[i % 2];
                 var opposingPlayer = players[j % 2];
                 player.makeMove(opposingPlayer, nextPlayer);
@@ -183,7 +184,7 @@ var Battleship = function () {
             var nextPlayer = function nextPlayer() {
                 var gameOver = _this2.players[0].lost() || _this2.players[1].lost();
                 if (gameOver) {
-                    Util.toggleElement('attack'); // move this to different area of code.
+                    Util.toggleElement('attack');
                     if (gameOver) {
                         _this2.displayWinner(_this2.players);
                         _this2.playAgain();
@@ -230,6 +231,7 @@ var Battleship = function () {
     }, {
         key: 'toggleAxis',
         value: function toggleAxis() {
+            // toggle axis text button
             var axis = document.getElementById('axis');
             if (axis.innerHTML === "Horizontal") {
                 axis.innerHTML = 'Vertical';
@@ -302,7 +304,7 @@ var Player = function () {
             var message = document.getElementById('message');
 
             if (!message) {
-                // if it does not exist create a new one for jest testing
+                // if it does not exist create a new one for testing
                 message = document.createElement('p');;
             } else {
                 message.innerHTML = this.name + ' place your&nbsp;'; // tell player which ship to place
@@ -312,8 +314,9 @@ var Player = function () {
                 ships[i].shipInfo(); // display ship information
 
                 var table = document.getElementById('' + _this.name);
+
                 if (!table) {
-                    // if it does not exist create a new one for jest testing
+                    // if it does not exist create a new one for testing
                     table = document.createElement('table');
                 }
 
@@ -356,7 +359,7 @@ var Player = function () {
         key: 'makeMove',
         value: function makeMove(opposingPlayer, callback) {
             opposingPlayer.displayBoard();
-            document.getElementById('attack').innerHTML = this.name + ' make your move, attack!'; // tell player to attack
+            document.getElementById('attack').innerHTML = this.name + ' make your move!';
             var move = function move(opposingPlayer) {
                 document.getElementById('' + opposingPlayer.name).addEventListener('click', function (event) {
                     var board = opposingPlayer.board;
@@ -437,16 +440,19 @@ var Board = function () {
         value: function display(name) {
             var _this = this;
 
-            var tables = document.getElementById('tables'); // get container
+            var tables = document.getElementById('tables');
             var table = document.getElementById('' + name);
+
             if (!table) {
                 // if it does not exist create a new one
                 table = document.createElement('table');;
             }
+
             if (!tables) {
                 // if it does not exist create a new one
                 tables = document.createElement('tables');;
-            } // create element if not there for jest testing
+            } // for testing
+
             var tr = void 0; // row
             var td = void 0; // column
 
@@ -480,9 +486,6 @@ var Board = function () {
             }
             this.display(name);
         }
-
-        // time complexity to generate an NxN board is O(n^2)
-
     }, {
         key: 'generateBoard',
         value: function generateBoard(n) {
@@ -502,7 +505,7 @@ var Board = function () {
             this.clearErrors();
             var i = 0;
             if (axis === 'Horizontal') {
-                // check for overlapping ship
+                // check for overlapping or out of bounds horizontally placed ship 
                 while (i < ship.length) {
                     if (this.grid[coordinates[0]][coordinates[1] + i] === 1) {
                         return false;
@@ -514,7 +517,7 @@ var Board = function () {
                     return false;
                 }
             } else {
-                // check if valid position for vertical placement
+                // check for overlapping or out of bounds vertically placed ship
                 if (coordinates[0] + ship.length > this.grid.length) {
                     return false;
                 } else {
@@ -541,7 +544,7 @@ var Board = function () {
                     i++;
                 }
             } else {
-                // vertical placement
+                // vertical ship placement
                 while (ship.coordinates.length < ship.length) {
                     ship.coordinates.push([startPos[0] + i, startPos[1]]);
                     this.grid[startPos[0] + i][startPos[1]] = 1;
@@ -576,9 +579,6 @@ var Board = function () {
             var _this2 = this;
 
             // checking the coordinates of each ship to see which ship was hit and if it was sunk
-            // time complexity O(nk)
-            // n = number of ships 
-            // k = length of longest ship
             this.ships.forEach(function (ship) {
                 ship.coordinates.forEach(function (location) {
                     if (Util.compareArray(coordinate, location)) {
@@ -602,6 +602,7 @@ var Board = function () {
     }, {
         key: 'reset',
         value: function reset(n) {
+            // reset game board
             this.generateBoard(n);
             this.gameStarted = false;
             this.shipsSunk = 0;
@@ -662,7 +663,7 @@ var Ship = function () {
         value: function shipInfo() {
             var ship = document.getElementById('ship');
             if (!ship) {
-                // if it does not exist create a new one for jest testing
+                // if it does not exist create a new one for testing
                 ship = document.createElement('p');;
             }
             ship.innerHTML = this.type + ' (length ' + this.length + ')';

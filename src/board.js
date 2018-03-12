@@ -14,14 +14,17 @@ class Board {
     }
 
     display(name) {
-        let tables = document.getElementById('tables'); // get container
+        let tables = document.getElementById('tables');
         let table = document.getElementById(`${name}`) 
+
         if (!table) { // if it does not exist create a new one
             table = document.createElement('table');;
         }
+
         if (!tables) { // if it does not exist create a new one
             tables = document.createElement('tables');;
-        } // create element if not there for jest testing
+        }  // for testing
+        
         let tr; // row
         let td; // column
 
@@ -54,7 +57,6 @@ class Board {
         this.display(name);
     }
 
-    // time complexity to generate an NxN board is O(n^2)
     generateBoard(n) {
         let row = [];
         this.grid = [];
@@ -70,7 +72,7 @@ class Board {
     validPosition(coordinates, ship, axis) {
         this.clearErrors();
         let i = 0;
-        if (axis === 'Horizontal') { // check for overlapping ship
+        if (axis === 'Horizontal') { // check for overlapping or out of bounds horizontally placed ship 
             while (i < ship.length) {
                 if (this.grid[coordinates[0]][coordinates[1]+i] === 1){ 
                     return false; 
@@ -80,7 +82,7 @@ class Board {
             if (coordinates[1] + ship.length > this.grid[0].length) { // check if out of bounds
                 return false;
             }
-        } else { // check if valid position for vertical placement
+        } else { // check for overlapping or out of bounds vertically placed ship
            if(coordinates[0] + ship.length > this.grid.length) {
                return false;
            } else {
@@ -104,7 +106,7 @@ class Board {
                 this.grid[startPos[0]][startPos[1]+i] = 1;         // update grid
                 i++;
             }
-        } else { // vertical placement
+        } else { // vertical ship placement
             while (ship.coordinates.length < ship.length) {
                 ship.coordinates.push([startPos[0]+i,startPos[1]])
                 this.grid[startPos[0]+i][startPos[1]] = 1;
@@ -135,9 +137,6 @@ class Board {
 
     checkShips(coordinate) {
         // checking the coordinates of each ship to see which ship was hit and if it was sunk
-        // time complexity O(nk)
-        // n = number of ships 
-        // k = length of longest ship
         this.ships.forEach((ship) => {
             ship.coordinates.forEach((location) => {
                 if (Util.compareArray(coordinate, location)) {
@@ -159,6 +158,7 @@ class Board {
     }
 
     reset(n) {
+        // reset game board
         this.generateBoard(n);
         this.gameStarted = false;
         this.shipsSunk = 0;

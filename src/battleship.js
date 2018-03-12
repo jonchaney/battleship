@@ -15,6 +15,7 @@ class Battleship {
         let j = 1;
         Util.toggleElement('attack');
         const move = (players, nextPlayer) => { 
+            // switch between players
             let player = players[i%2];
             let opposingPlayer = players[j%2];
             player.makeMove(opposingPlayer, nextPlayer); 
@@ -25,7 +26,7 @@ class Battleship {
         const nextPlayer = () => {
             let gameOver = this.players[0].lost() || this.players[1].lost()
             if(gameOver) {
-                Util.toggleElement('attack'); // move this to different area of code.
+                Util.toggleElement('attack'); 
                 if (gameOver) {
                     this.displayWinner(this.players)
                     this.playAgain();
@@ -61,6 +62,7 @@ class Battleship {
     }
 
     toggleAxis() {
+        // toggle axis text button
         let axis = document.getElementById('axis');
         if (axis.innerHTML === "Horizontal") {
             axis.innerHTML = 'Vertical';

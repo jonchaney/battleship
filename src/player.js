@@ -12,7 +12,7 @@ class Player {
         let ships = this.board.ships;
         let message = document.getElementById('message')
 
-        if (!message) { // if it does not exist create a new one for jest testing
+        if (!message) { // if it does not exist create a new one for testing
             message = document.createElement('p');;
         } else {
             message.innerHTML = `${this.name} place your&nbsp;` // tell player which ship to place
@@ -22,7 +22,8 @@ class Player {
             ships[i].shipInfo(); // display ship information
 
             let table = document.getElementById(`${this.name}`)
-            if (!table) { // if it does not exist create a new one for jest testing
+
+            if (!table) { // if it does not exist create a new one for testing
                 table = document.createElement('table');
             } 
             
@@ -61,7 +62,7 @@ class Player {
 
     makeMove(opposingPlayer, callback) {
         opposingPlayer.displayBoard();
-        document.getElementById('attack').innerHTML = `${this.name} make your move, attack!` // tell player to attack
+        document.getElementById('attack').innerHTML = `${this.name} make your move!` 
         const move = (opposingPlayer) => { 
             document.getElementById(`${opposingPlayer.name}`).addEventListener('click', (event) => { 
                 let board = opposingPlayer.board;
