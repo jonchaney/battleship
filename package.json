@@ -5,7 +5,7 @@
   "main": "entry.js",
   "scripts": {
     "test": "jest",
-    "start": "sass --watch ./assets/scss/entry.scss:./assets/css/bundle.css & webpack --watch"
+    "start": "sass --watch ./assets/scss/entry.scss:./assets/css/bundle.css & webpack --watch & open index.html"
   },
   "repository": {
     "type": "git",
