@@ -100,7 +100,7 @@ var changeInnerHtml = function changeInnerHtml(id, str) {
         element = document.createElement('p');
         element.innerHTML = "" + str;
     } else {
-        element.getElementById("" + id).innerHTML = "" + str;
+        element.innerHTML = "" + str;
     }
 };
 
